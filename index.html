@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PharmaFlow نظام ادارة الصيدليات </title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sales.css">
 
 </head>
 
@@ -17,7 +18,7 @@
             <h1 class="header-title"> صيدلية الشفاء</h1>
         </div>
         <div class="header-actions">
-            
+
             <div class="user-profile">
                 <span class="user-name">سامي</span>
                 <i data-lucide="user"></i>
@@ -27,15 +28,15 @@
             </button>
         </div>
     </div>
-    
+
     <div class="tabs">
         <div class="tab active" onclick="switchTab('sales', this)"><i data-lucide="shopping-cart"></i> المبيعات</div>
         <div class="tab" onclick="switchTab('inventory', this)"><i data-lucide="layers"></i> الرفوف</div>
         <div class="tab" onclick="switchTab('ar', this)"><i data-lucide="scan-line"></i> AR</div>
         <div class="tab" onclick="switchTab('recent', this)"><i data-lucide="history"></i> السجل</div>
-         
+
     </div>
-	
+
 
     <div id="sales" class="view active">
 	    <!-- حاوية بيانات العميل الجديدة -->
@@ -122,7 +123,7 @@
         </div>
 
         <button class="btn-add" onclick="addProduct()"><i data-lucide="plus-circle"></i> إضافة دواء</button>
-        
+
         <div id="addedDrugsContainer" class="added-drugs-container"></div>        <!-- شاشة تسوية الفاتورة (التي تم نقلها) -->
         <div id="settlementSection" class="settlement-section">
             <div class="payment-method-toggle">
@@ -156,14 +157,14 @@
             </div>
         </div>
 
-       
+
 
         <div class="receipt">
             <div class="receipt-header">
                 <div><span>رقم العملية: <strong id="opNum" class="font-mono">OP-8821</strong></span> <span>فاتورة: <strong id="invNum" class="font-mono">INV-091</strong></span></div>
                 <div><span id="dateTime"></span> <span>الموظف : سامي</span></div>
             </div>
-            
+
             <!-- تم نقل قسم الدفع والعميل إلى الأعلى -->
             <table class="receipt-table" id="receiptTable">
                 <tr>
@@ -177,17 +178,17 @@
                 <span>الإجمالي الكلي:</span>
                 <span id="grandTotal">$0.00</span>
             </div>
-            
+
 
             <div class="receipt-footer">
                 <div><strong><i data-lucide="store" class="receipt-table-icon"></i> صيدلية الشفاء</strong></div>
                 <div class="receipt-contact"><i data-lucide="phone" class="receipt-table-icon"></i> 967777967272+ </div>
-            </div> 
-            <div class="receipt-footer-p"><i data-lucide="smile"></i> عافية بإذن الله</div> 			
+            </div>
+            <div class="receipt-footer-p"><i data-lucide="smile"></i> عافية بإذن الله</div>
         </div>
-        
+
         <button class="btn-print" onclick="printReceipt()"><i data-lucide="printer"></i> إصدار / طباعة الفاتورة</button>
-        
+
         <!-- إحصائيات الدخل اليومي -->
         <div class="daily-stats">
             <div class="stat-card">
@@ -229,7 +230,7 @@
             محاكاة استخدام الكاميرا للتعرف على المخزون بشكل مكاني فوق الرفوف الحقيقية.
         </p>
         <button class="btn-add" onclick="document.getElementById('arMockup').style.display='block'"><i data-lucide="camera"></i> تشغيل SkyView</button>
-        
+
         <div class="ar-container" id="arMockup" style="display: none;">
             <div class="ar-grid"></div>
             <div class="ar-label" style="top: 20%; left: 10%;">Panadol: 45 Box</div>
@@ -241,7 +242,7 @@
 
     <div id="recent" class="view">
         <h3 class="reports-title"><i data-lucide="clipboard-list"></i> تقارير المبيعات</h3>
-        
+
         <!-- ملخص اليوم -->
         <div class="sales-summary">
             <div class="summary-item">
@@ -266,7 +267,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- قائمة الفواتير -->
         <h4 class="reports-subtitle">آخر الفواتير</h4>
         <div id="salesList">
@@ -346,316 +347,19 @@
         if (theme.id !== 'default') {
             body.setAttribute('data-theme', theme.id);
         }
-        
+
         // تحديث الأيقونة والنص التوضيحي
         icon.setAttribute('data-lucide', theme.icon);
         btn.title = `تبديل الثيم: ${theme.name}`;
-        
+
         if(typeof lucide !== 'undefined') lucide.createIcons();
     }
-
-    const db = {
-        'Amoxicillin 500mg': { price: 15.50, desc: "مضاد حيوي واسع المجال يستخدم لعلاج الالتهابات البكتيرية." },
-        'Panadol Advance': { price: 5.00, desc: "مسكن للألم وخافض للحرارة الخفيفة والمتوسطة." },
-        'Ibuprofen 400mg': { price: 8.25, desc: "مضاد للالتهابات ومسكن لآلام المفاصل والعضلات." },
-        'Nexium 40mg': { price: 22.00, desc: "يقلل من حموضة المعدة ويستخدم لعلاج الارتجاع المريئي." },
-        'Aspirin Protect': { price: 4.50, desc: "مميع للدم يستخدم للوقاية من التجلطات الدموية." },
-        'Vitamin C 1000mg': { price: 6.00, desc: "مكمل غذائي لتعزيز المناعة." }
-    };
-
-    let currentItemPrice = 0;
-    let grandTotal = 0;
-    let invCounter = 92;
-    let paymentMethod = 'cash'; // 'cash' or 'credit'
-    let dailySalesData = [];
-    const drugNames = Object.keys(db);
-
-    const searchInput = document.getElementById('drugSearch');
-    const dropdown = document.getElementById('searchDropdown');
-
-    function showDropdown() {
-        dropdown.innerHTML = '';
-        drugNames.forEach(name => {
-            let div = document.createElement('div');
-            div.className = 'dropdown-item';
-            div.innerHTML = `<strong>${name}</strong> <span>$${db[name].price.toFixed(2)}</span>`;
-            div.onclick = () => selectDrug(name);
-            dropdown.appendChild(div);
-        });
-        dropdown.style.display = 'block';
-    }
-
-    function selectDrug(name) {
-        searchInput.value = name;
-        dropdown.style.display = 'none';
-        handleSearch();
-    }
-
-    function handleSearch() {
-        const query = searchInput.value;
-        const bubble = document.getElementById('aiBubble');
-        const aiText = document.getElementById('aiText');
-        
-        if (db[query]) {
-            currentItemPrice = db[query].price;
-            document.getElementById('unitPrice').innerText = `$${currentItemPrice.toFixed(2)}`;
-            updateTotal();
-            aiText.innerText = db[query].desc;
-            bubble.style.display = 'block';
-        } else {
-            bubble.style.display = 'none';
-            currentItemPrice = 0;
-            document.getElementById('unitPrice').innerText = `$0.00`;
-            document.getElementById('totalPrice').innerText = `$0.00`;
-        }
-    }
-
-    document.addEventListener('click', function(e) {
-        if(e.target !== searchInput && e.target !== dropdown) { dropdown.style.display = 'none'; }
-        const advCustomerNameInput = document.getElementById('advCustomerName');
-        const customerDropdown = document.getElementById('customerDropdown');
-        if(advCustomerNameInput && customerDropdown && e.target !== advCustomerNameInput && e.target !== customerDropdown) { 
-            customerDropdown.style.display = 'none'; 
-        }
-    });
-
-    // بيانات العملاء التجريبية
-    const customerDB = [
-        { name: "أحمد محمد عبدالله", fileNum: "C-1001", phone: "771234567", whatsapp: "771234567" },
-        { name: "صالح علي مبخوت", fileNum: "C-1002", phone: "712345678", whatsapp: "712345678" },
-        { name: "فاطمة حسن الخولاني", fileNum: "C-1003", phone: "733456789", whatsapp: "733456789" },
-        { name: "سالم عبدالجبار", fileNum: "C-1004", phone: "770987654", whatsapp: "770987654" }
-    ];
-    let lastFileNum = 1004;
-    let selectedCustomer = null;
-
-    function showCustomerDropdown() {
-        handleCustomerSearch();
-    }
-
-    function handleCustomerSearch() {
-        const input = document.getElementById('advCustomerName');
-        const dropdown = document.getElementById('customerDropdown');
-        const contactSection = document.getElementById('newCustomerContact');
-        const fileInput = document.getElementById('advCustomerFile');
-        const query = input.value.trim();
-        
-        dropdown.innerHTML = '';
-        selectedCustomer = null;
-        contactSection.style.display = 'flex';
-        
-        if (query === '') {
-            fileInput.value = '';
-            dropdown.style.display = 'none';
-            return;
-        }
-
-        let matches = customerDB.filter(c => c.name.includes(query));
-        
-        if (matches.length === 0) {
-            fileInput.value = `C-${lastFileNum + 1}`;
-            dropdown.style.display = 'none';
-            return;
-        }
-
-        matches.forEach(c => {
-            let div = document.createElement('div');
-            div.className = 'dropdown-item';
-            div.innerHTML = `<strong>${c.name}</strong> <span class="customer-search-file">${c.fileNum}</span>`;
-            div.onclick = () => {
-                input.value = c.name;
-                fileInput.value = c.fileNum;
-                selectedCustomer = c;
-                contactSection.style.display = 'none';
-                dropdown.style.display = 'none';
-            };
-            dropdown.appendChild(div);
-        });
-        
-        dropdown.style.display = 'block';
-    }
-
-    function syncPhoneToWhatsapp() {
-        const phoneInput = document.getElementById('advCustomerPhone');
-        const whatsappInput = document.getElementById('advCustomerWhatsapp');
-        const checkbox = document.getElementById('sameAsPhone');
-        if (checkbox.checked) {
-            whatsappInput.value = phoneInput.value;
-            whatsappInput.readOnly = true;
-            whatsappInput.style.opacity = '0.7';
-        } else {
-            whatsappInput.readOnly = false;
-            whatsappInput.style.opacity = '1';
-        }
-    }
-
-    function updateQty(change) {
-        let input = document.getElementById('qtyInput');
-        let val = parseInt(input.value) + change;
-        if(val >= 1) { input.value = val; updateTotal(); }
-    }
-
-    function updateTotal() {
-        let qty = parseInt(document.getElementById('qtyInput').value);
-        let total = qty * currentItemPrice;
-        document.getElementById('totalPrice').innerText = `$${total.toFixed(2)}`;
-    }
-
-    function addProductToTable(name, qty, price) {
-        let subtotal = qty * price;
-        grandTotal += subtotal;
-
-        let table = document.getElementById('receiptTable');
-        let row = table.insertRow();
-        let itemId = 'item_' + Date.now() + Math.floor(Math.random() * 1000);
-        row.id = itemId + '_row';
-        row.innerHTML = `<td>${name}</td><td>${qty}</td><td>$${price.toFixed(2)}</td><td>$${subtotal.toFixed(2)}</td>`;
-        
-        document.getElementById('grandTotal').innerText = `$${grandTotal.toFixed(2)}`;
-        setPaymentMethod(paymentMethod); // Update payment fields based on new total
-        
-        // إنشاء فقاعة الدواء المضاف
-        let container = document.getElementById('addedDrugsContainer');
-        if (container) {
-            let bubble = document.createElement('div');
-            bubble.className = 'drug-bubble';
-            bubble.id = itemId + '_bubble';
-            bubble.innerHTML = `
-                <span class="drug-bubble-name">${name}</span>
-                <span class="bubble-separator">|</span>
-                <span class="drug-bubble-qty">${qty}</span>
-                <div class="drug-bubble-delete" onclick="removeProduct('${itemId}', ${subtotal})"><i data-lucide="x" class="icon-x-small"></i></div>
-            `;
-            container.appendChild(bubble);
-            if(typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        }
-    }
-
-    function removeProduct(id, subtotal) {
-        let row = document.getElementById(id + '_row');
-        let bubble = document.getElementById(id + '_bubble');
-        if(row) row.remove();
-        if(bubble) bubble.remove();
-        
-        grandTotal -= subtotal;
-        if(grandTotal < 0) grandTotal = 0;
-        document.getElementById('grandTotal').innerText = `$${grandTotal.toFixed(2)}`;
-        
-        setPaymentMethod(paymentMethod);
-    }
-
-    function addProduct() {
-        let name = searchInput.value;
-        let qty = parseInt(document.getElementById('qtyInput').value);
-        if (currentItemPrice === 0) return alert("الرجاء البحث واختيار دواء صحيح أولاً.");
-
-        addProductToTable(name, qty, currentItemPrice);
-        
-        searchInput.value = '';
-        document.getElementById('qtyInput').value = '1';
-        handleSearch();
-        
-        document.getElementById('invNum').innerText = `INV-${invCounter.toString().padStart(3, '0')}`;
-        invCounter++;
-        
-        // تحديث الإحصائيات
-        updateDailyStats();
-    }
-    
-    function updateDailyStats() {
-        // محاكاة تحديث الإحصائيات (في التطبيق الحقيقي سيتم جلب البيانات من قاعدة البيانات)
-        let currentIncome = parseFloat(document.getElementById('dailyIncome').innerText.replace('$', '')) || 0;
-        let currentCount = parseInt(document.getElementById('invoiceCount').innerText) || 0;
-        
-        currentIncome += grandTotal;
-        currentCount += 1;
-        
-        document.getElementById('dailyIncome').innerText = `$${currentIncome.toFixed(2)}`;
-        document.getElementById('invoiceCount').innerText = currentCount;
-        document.getElementById('lastSale').innerText = new Date().toLocaleTimeString('ar-YE', {hour: '2-digit', minute:'2-digit'});
-        
-        // تحديث تقارير المبيعات
-        document.getElementById('totalSales').innerText = `$${currentIncome.toFixed(2)}`;
-        if (paymentMethod === 'credit') {
-            let creditCount = parseInt(document.getElementById('creditCustomers').innerText) || 0;
-            document.getElementById('creditCustomers').innerText = creditCount + 1;
-        }
-        
-        // حفظ البيانات في التخزين المحلي
-        saveSaleData();
-    }
-    
-    function saveSaleData() {
-        let saleData = {
-            invoice: `INV-${(invCounter - 1).toString().padStart(3, '0')}`,
-            total: grandTotal,
-            paymentMethod: paymentMethod,
-            customerName: (paymentMethod === 'credit' || paymentMethod === 'partial') ? (document.getElementById('advCustomerName') ? document.getElementById('advCustomerName').value : null) : null,
-            time: new Date().toISOString(),
-            items: []
-        };
-        
-        // حفظ في localStorage (يمكن استبداله بـ Dexie.js لاحقاً)
-        let sales = JSON.parse(localStorage.getItem('pharmaSales') || '[]');
-        sales.push(saleData);
-        localStorage.setItem('pharmaSales', JSON.stringify(sales));
-        
-        dailySalesData = sales;
-    }
-
-    function setPaymentMethod(method) {
-        paymentMethod = method;
-        document.querySelectorAll('#settlementSection .payment-btn').forEach(btn => btn.classList.remove('active'));
-        const btn = document.getElementById(`${method}Btn`);
-        if (btn) btn.classList.add('active');
-        
-        const paidAmountInput = document.getElementById('paidAmount');
-        const paidAmountContainer = document.getElementById('paidAmountContainer');
-        const changeWrapper = document.getElementById('changeDisplayWrapper');
-        const changeAmount = document.getElementById('changeAmount');
-        const changeLabel = document.getElementById('changeLabel');
-
-        if (!paidAmountInput) return;
-
-        if (method === 'cash') {
-            changeWrapper.style.display = 'none';
-            paidAmountContainer.style.width = '100%';
-            paidAmountInput.readOnly = true;
-            paidAmountInput.value = grandTotal.toFixed(2);
-        } else if (method === 'credit') {
-            changeWrapper.style.display = 'flex';
-            paidAmountContainer.style.width = '60%';
-            paidAmountInput.readOnly = true;
-            paidAmountInput.value = '0';
-            changeLabel.innerText = 'المتبقي';
-            changeAmount.innerText = `$${grandTotal.toFixed(2)}`;
-        } else if (method === 'partial') {
-            changeWrapper.style.display = 'flex';
-            paidAmountContainer.style.width = '60%';
-            paidAmountInput.readOnly = false;
-            if (parseFloat(paidAmountInput.value) === grandTotal || paidAmountInput.value === '0') {
-                paidAmountInput.value = '';
-            }
-            changeLabel.innerText = 'المتبقي';
-            calculateChange();
-        }
-    }
-
-    function calculateChange() {
-        if (paymentMethod !== 'partial') return;
-        let paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
-        let change = grandTotal - paidAmount;
-        document.getElementById('changeAmount').innerText = `$${Math.max(0, change).toFixed(2)}`;
-    }
-
+</script>
+<script src="js/sales.js"></script>
+<script>
     window.onload = () => {
-        addProductToTable('Panadol Advance', 2, db['Panadol Advance'].price);
-        addProductToTable('Vitamin C 1000mg', 1, db['Vitamin C 1000mg'].price);
-        
-        // إذا كانت الشاشة أكبر من 768، نقوم بتفعيل تبويب "الرفوف" ليكون المعروض افتراضياً في النصف الأيسر 
-        // نظراً لأن المبيعات ستكون معروضة بشكل دائم في النصف الأيمن.
+        if (typeof initSales === 'function') initSales();
+
         if(window.innerWidth >= 768) {
             switchTab('inventory', document.querySelectorAll('.tab')[1]);
         }
@@ -663,289 +367,81 @@
 
     setInterval(() => {
         let now = new Date();
-        document.getElementById('dateTime').innerText = now.toLocaleString('ar-YE', {hour: '2-digit', minute:'2-digit', month:'short', day:'numeric'});
+        const dateTimeElem = document.getElementById('dateTime');
+        if (dateTimeElem) {
+            dateTimeElem.innerText = now.toLocaleString('ar-YE', {hour: '2-digit', minute:'2-digit', month:'short', day:'numeric'});
+        }
     }, 1000);
-
-    document.querySelectorAll('.qty-presets button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (this.id === 'customUnitBtn') return; // Custom button has its own logic
-            document.querySelectorAll('.qty-presets button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Revert custom button text if clicking a preset
-            const customBtn = document.getElementById('customUnitBtn');
-            if (customBtn) {
-                customBtn.innerHTML = `<i data-lucide="pen-tool" class="icon-small"></i> مخصص`;
-                lucide.createIcons();
-            }
-        });
-    });
-
-    function enableCustomUnit() {
-        const btn = document.getElementById('customUnitBtn');
-        const input = document.getElementById('customUnitInput');
-        document.querySelectorAll('.qty-presets button').forEach(b => b.classList.remove('active'));
-        btn.style.display = 'none';
-        input.style.display = 'block';
-        input.focus();
-    }
-
-    function disableCustomUnit(input) {
-        const btn = document.getElementById('customUnitBtn');
-        if(input.value.trim() !== '') {
-            btn.innerHTML = `<i data-lucide="check-circle" class="icon-small"></i> ${input.value}`;
-            btn.classList.add('active');
-        } else {
-            btn.innerHTML = `<i data-lucide="pen-tool" class="icon-small"></i> مخصص`;
-        }
-        input.style.display = 'none';
-        btn.style.display = 'flex';
-        lucide.createIcons();
-    }
-
-    function openScanner() {
-        // تفعيل الكاميرا الحقيقية لمسح الباركود
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(function(stream) {
-                    alert('تم تفعيل الكاميرا بنجاح! جاري تجهيز ماسح الباركود...');
-                    // هنا يمكن إضافة مكتبة مثل QuaggaJS للتعرف على الباركود
-                    stream.getTracks().forEach(track => track.stop());
-                })
-                .catch(function(err) {
-                    alert('لا يمكن الوصول للكاميرا: ' + err.message);
-                });
-        } else {
-            alert('متصفحك لا يدعم الوصول للكاميرا');
-        }
-    }
-
-    let prescriptionStream = null;
-
-    function scanPrescription() {
-        const overlay = document.getElementById('prescriptionScannerOverlay');
-        const video = document.getElementById('prescriptionVideo');
-        const scannerBar = document.getElementById('scannerBar');
-        const aiLoader = document.getElementById('scannerAILoader');
-
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                .then(function(stream) {
-                    prescriptionStream = stream;
-                    video.srcObject = stream;
-                    overlay.style.display = 'flex';
-                    if(typeof lucide !== 'undefined') lucide.createIcons();
-                    
-                    // بدء شريط التقدم (5 ثواني)
-                    scannerBar.style.width = '0%';
-                    setTimeout(() => scannerBar.style.width = '100%', 50);
-
-                    // محاكاة التحليل بعد 5 ثواني
-                    setTimeout(() => {
-                        aiLoader.style.display = 'flex';
-                        
-                        setTimeout(() => {
-                            closePrescriptionScanner();
-                            aiLoader.style.display = 'none';
-                            
-                            let extractedDrugs = [
-                                { name: 'Panadol Advance', qty: 1 },
-                                { name: 'Amoxicillin 500mg', qty: 2 },
-                                { name: 'Vitamin C 1000mg', qty: 1 }
-                            ];
-                            
-                            // إضافتها للفاتورة تلقائيا مع رسالة تأكيد
-                            extractedDrugs.forEach(d => {
-                                if(db[d.name]) {
-                                    addProductToTable(d.name, d.qty, db[d.name].price);
-                                }
-                            });
-                            updateDailyStats();
-                            
-                            alert("✨ AI Scan: تم استخراج 3 أصناف من الوصفة وإضافتها بنجاح!");
-                        }, 2000); // وقت إضافي للتحليل البصري
-                    }, 5000);
-                })
-                .catch(function(err) {
-                    alert('لا يمكن الوصول للكاميرا: ' + err.message);
-                });
-        } else {
-            alert('متصفحك لا يدعم الوصول للكاميرا');
-        }
-    }
-
-    function closePrescriptionScanner() {
-        const overlay = document.getElementById('prescriptionScannerOverlay');
-        const video = document.getElementById('prescriptionVideo');
-        
-        if (prescriptionStream) {
-            prescriptionStream.getTracks().forEach(track => track.stop());
-            prescriptionStream = null;
-        }
-        
-        video.srcObject = null;
-        overlay.style.display = 'none';
-        document.getElementById('scannerBar').style.width = '0%';
-    }
-
-    function printReceipt() {
-        // التحقق من البيانات المطلوبة للطباعة
-        if (grandTotal === 0) {
-            alert('لا توجد عناصر في الفاتورة للطباعة');
-            return;
-        }
-        
-        let custName = document.getElementById('advCustomerName') ? document.getElementById('advCustomerName').value.trim() : '';
-        if (paymentMethod === 'credit' || paymentMethod === 'partial') {
-            if (!custName) {
-                alert('الرجاء إدخال اسم العميل للفواتير الآجلة أو الجزئية');
-                return;
-            }
-        }
-        
-        const receiptContent = document.querySelector('.receipt').innerHTML;
-        const printWindow = window.open('', '_blank', 'width=400,height=600');
-        
-        // إضافة معلومات الدفع والعميل للطباعة
-        let pMethodText = paymentMethod === 'credit' ? 'آجل' : (paymentMethod === 'partial' ? 'دفع جزئي' : 'نقدي');
-        let paymentInfo = (paymentMethod === 'credit' || paymentMethod === 'partial') ? 
-            `<div style="margin: 10px 0; padding: 10px; border: 1px dashed #000; text-align: right;"><strong>طريقة الدفع:</strong> ${pMethodText}<br><strong>العميل:</strong> ${custName}</div>` :
-            `<div style="margin: 10px 0; padding: 10px; border: 1px dashed #000; text-align: right;"><strong>طريقة الدفع:</strong> ${pMethodText}</div>`;
-        
-        let settlementInfo = '';
-        if (paymentMethod === 'partial') {
-            settlementInfo = `<div style="margin: 10px 0; text-align: right;"><strong>المبلغ المدفوع:</strong> $${parseFloat(document.getElementById('paidAmount').value || 0).toFixed(2)}<br><strong>المتبقي:</strong> ${document.getElementById('changeAmount').innerText}</div>`;
-        } else if (paymentMethod === 'credit') {
-            settlementInfo = `<div style="margin: 10px 0; text-align: right;"><strong>المتبقي:</strong> ${document.getElementById('changeAmount').innerText}</div>`;
-        } else {
-            settlementInfo = `<div style="margin: 10px 0; text-align: right;"><strong>المبلغ المدفوع:</strong> $${grandTotal.toFixed(2)}</div>`;
-        }
-        
-        printWindow.document.write(`
-            <html dir="rtl">
-                <head>
-                    <title>طباعة الفاتورة</title>
-                    <style>
-                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; color: #000; background: #fff; text-align: center; }
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 0.9rem; }
-                        th, td { border-bottom: 1px dashed #000; padding: 8px 5px; text-align: center; }
-                        .receipt-total { font-weight: bold; border-top: 2px dashed #000; padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; font-size: 1.1rem; }
-                        .receipt-header { border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 10px; text-align: right; font-size: 0.8rem; }
-                        .receipt-header div { display: flex; justify-content: space-between; margin-bottom: 5px; }
-                        .receipt-footer { margin-top: 20px; border-top: 2px dashed #000; padding-top: 10px; font-size: 0.9rem; }
-                        .receipt-footer-p { margin-top: 10px; font-weight: bold; }
-                        .lucide { display: none; } /* Hide icons in print */
-                        .payment-section, .settlement-section { display: none; } /* Hide interactive elements */
-                    </style>
-                </head>
-                <body>
-                    <h2 style="margin-bottom: 20px;">صيدلية يمان</h2>
-                    ${receiptContent}
-                    ${paymentInfo}
-                    ${settlementInfo}
-                    <script>
-                        window.onload = function() { window.print(); window.close(); }
-                    <\/script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        
-        // إعادة تعيين الفاتورة بعد الطباعة
-        setTimeout(() => {
-            resetReceipt();
-        }, 1000);
-    }
-    
-    function resetReceipt() {
-        // إعادة تعيين الفاتورة للعملية التالية
-        grandTotal = 0;
-        document.getElementById('receiptTable').innerHTML = `
-            <tr>
-                <th><i data-lucide="pill"></i> الصنف</th>
-                <th><i data-lucide="layers"></i> الكمية</th>
-                <th><i data-lucide="tag"></i> السعر</th>
-                <th><i data-lucide="wallet"></i> المجموع</th>
-            </tr>`;
-        document.getElementById('grandTotal').innerText = '$0.00';
-        
-        let container = document.getElementById('addedDrugsContainer');
-        if (container) container.innerHTML = '';
-        
-        if(document.getElementById('advCustomerName')) document.getElementById('advCustomerName').value = '';
-        if(document.getElementById('advCustomerFile')) document.getElementById('advCustomerFile').value = '';
-        if(document.getElementById('advCustomerPhone')) document.getElementById('advCustomerPhone').value = '';
-        if(document.getElementById('advCustomerWhatsapp')) document.getElementById('advCustomerWhatsapp').value = '';
-        
-        // تحديث رقم الفاتورة التالي
-        document.getElementById('invNum').innerText = `INV-${invCounter.toString().padStart(3, '0')}`;
-        setPaymentMethod('cash');
-    }
 
     // إنشاء جدران المخزون ثلاثي الأبعاد
     const wallsContainer = document.getElementById('wallsContainer');
-    const randomDrugsList = ['Amoxil', 'Panadol', 'Voltaren', 'Nexium', 'Lipitor', 'Zyrtec', 'Aspirin', 'Metformin', 'Concor', 'Lasix'];
-    
-    for(let w=1; w<=3; w++) {
-        let wall = document.createElement('div');
-        wall.className = 'wall';
-        
-        for(let r=1; r<=15; r++) {
-            for(let c=1; c<=20; c++) {
-                let shelf = document.createElement('div');
-                shelf.className = 'shelf-cell';
-                
-                let randStatus = Math.random();
-                let statusClass = '';
-                let highlightClass = '';
-                
-                if (randStatus > 0.95) { 
-                    statusClass = 'status-low';
-                    highlightClass = 'highlight-low';
-                } else if (randStatus > 0.90) { 
-                    statusClass = 'status-expiry';
-                    highlightClass = 'highlight-expiry';
-                }
-                
-                if(statusClass) shelf.classList.add(statusClass);
+    if (wallsContainer) {
+        const randomDrugsList = ['Amoxil', 'Panadol', 'Voltaren', 'Nexium', 'Lipitor', 'Zyrtec', 'Aspirin', 'Metformin', 'Concor', 'Lasix'];
 
-                shelf.innerHTML = `<span class="cell-coord">ج${w}</span>`;
-                
-                let popup = document.createElement('div');
-                popup.className = 'cell-popup';
-                
-                let numItems = Math.floor(Math.random() * 3) + 3;
-                let popupHTML = `<div class="popup-header">الإحداثيات: جدار ${w} - صف ${r} - عمود ${c}</div>`;
-                
-                for(let i=0; i<numItems; i++) {
-                    let dName = randomDrugsList[Math.floor(Math.random() * randomDrugsList.length)];
-                    let dQty = Math.floor(Math.random() * 40) + 1;
-                    
-                    let lineClass = (statusClass && i === 0) ? highlightClass : '';
-                    if (highlightClass == 'highlight-low') dQty = Math.floor(Math.random() * 3) + 1;
-                    
-                    popupHTML += `<div class="drug-line ${lineClass}"><span>${dName}</span> <span class="drug-Qty">${dQty}</span></div>`;
+        for(let w=1; w<=3; w++) {
+            let wall = document.createElement('div');
+            wall.className = 'wall';
+
+            for(let r=1; r<=15; r++) {
+                for(let c=1; c<=20; c++) {
+                    let shelf = document.createElement('div');
+                    shelf.className = 'shelf-cell';
+
+                    let randStatus = Math.random();
+                    let statusClass = '';
+                    let highlightClass = '';
+
+                    if (randStatus > 0.95) {
+                        statusClass = 'status-low';
+                        highlightClass = 'highlight-low';
+                    } else if (randStatus > 0.90) {
+                        statusClass = 'status-expiry';
+                        highlightClass = 'highlight-expiry';
+                    }
+
+                    if(statusClass) shelf.classList.add(statusClass);
+
+                    shelf.innerHTML = `<span class="cell-coord">ج${w}</span>`;
+
+                    let popup = document.createElement('div');
+                    popup.className = 'cell-popup';
+
+                    let numItems = Math.floor(Math.random() * 3) + 3;
+                    let popupHTML = `<div class="popup-header">الإحداثيات: جدار ${w} - صف ${r} - عمود ${c}</div>`;
+
+                    for(let i=0; i<numItems; i++) {
+                        let dName = randomDrugsList[Math.floor(Math.random() * randomDrugsList.length)];
+                        let dQty = Math.floor(Math.random() * 40) + 1;
+
+                        let lineClass = (statusClass && i === 0) ? highlightClass : '';
+                        if (highlightClass == 'highlight-low') dQty = Math.floor(Math.random() * 3) + 1;
+
+                        popupHTML += `<div class="drug-line ${lineClass}"><span>${dName}</span> <span class="drug-Qty">${dQty}</span></div>`;
+                    }
+                    popup.innerHTML = popupHTML;
+                    shelf.appendChild(popup);
+
+                    shelf.onclick = function(e) {
+                        document.querySelectorAll('.shelf-cell.zoomed').forEach(s => {
+                            if(s !== this) s.classList.remove('zoomed');
+                        });
+                        this.classList.toggle('zoomed');
+                        e.stopPropagation();
+                    };
+
+                    wall.appendChild(shelf);
                 }
-                popup.innerHTML = popupHTML;
-                shelf.appendChild(popup);
-                
-                shelf.onclick = function(e) {
-                    document.querySelectorAll('.shelf-cell.zoomed').forEach(s => {
-                        if(s !== this) s.classList.remove('zoomed');
-                    });
-                    this.classList.toggle('zoomed');
-                    e.stopPropagation();
-                };
-                
-                wall.appendChild(shelf);
             }
+            wallsContainer.appendChild(wall);
         }
-        wallsContainer.appendChild(wall);
     }
 
-    document.getElementById('inventory').addEventListener('click', () => {
-        document.querySelectorAll('.shelf-cell.zoomed').forEach(s => s.classList.remove('zoomed'));
-    });
+    const inventoryElem = document.getElementById('inventory');
+    if (inventoryElem) {
+        inventoryElem.addEventListener('click', () => {
+            document.querySelectorAll('.shelf-cell.zoomed').forEach(s => s.classList.remove('zoomed'));
+        });
+    }
 
 </script>
 </body>
