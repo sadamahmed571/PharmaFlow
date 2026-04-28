@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم - صيدلية يمان</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="img/logo.jpg" alt="Logo" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue);" onerror="this.style.display='none'">
+            <h1 style="margin: 0; display: flex; align-items: center; font-size: 1.2rem;"> لوحة التحكم - يمان</h1>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; background: var(--button); padding: 5px 12px; border-radius: 20px; cursor: pointer; border: 1px solid var(--border-dim);" onclick="window.location.href='index.html'">
+            <span style="font-size: 0.9rem; font-weight: bold;">الرئيسية</span>
+            <i data-lucide="home" style="margin-left: 0;"></i>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('analytics', this)"><i data-lucide="bar-chart-3"></i> التحليلات</div>
+        <div class="tab" onclick="switchTab('inventory-admin', this)"><i data-lucide="box"></i> المخزون</div>
+        <div class="tab" onclick="switchTab('finance', this)"><i data-lucide="wallet"></i> المالية</div>
+        <div class="tab" onclick="switchTab('settings-admin', this)"><i data-lucide="settings"></i> الإعدادات</div>
+    </div>
+
+    <!-- Analytics View -->
+    <div id="analytics" class="view active">
+        <div class="admin-stats-grid">
+            <div class="stat-card">
+                <h3>إجمالي المبيعات (اليوم)</h3>
+                <div class="value">$1,250.50</div>
+            </div>
+            <div class="stat-card">
+                <h3>عدد الفواتير</h3>
+                <div class="value">42</div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 10px; color: var(--accent-blue); font-size: 1rem;"><i data-lucide="trending-up"></i> أداء المبيعات</h3>
+        <div class="chart-mockup">
+            <svg width="100%" height="100%" viewBox="0 0 400 150" preserveAspectRatio="none">
+                <path d="M0,120 Q50,100 100,110 T200,80 T300,90 T400,50" fill="none" stroke="var(--active)" stroke-width="3" />
+                <circle cx="100" cy="110" r="4" fill="var(--accent-yellow)" />
+                <circle cx="200" cy="80" r="4" fill="var(--accent-yellow)" />
+                <circle cx="300" cy="90" r="4" fill="var(--accent-yellow)" />
+                <circle cx="400" cy="50" r="4" fill="var(--accent-yellow)" />
+            </svg>
+            <div style="position: absolute; bottom: 5px; left: 5px; font-size: 0.6rem; color: var(--text-muted);">رسم بياني تجريبي للأداء الأسبوعي</div>
+        </div>
+
+        <h3 style="margin-bottom: 10px; color: var(--accent-blue); font-size: 1rem;"><i data-lucide="list"></i> تفاصيل الفواتير الصادرة</h3>
+        <div class="admin-table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>الأصناف</th>
+                        <th>القيمة</th>
+                        <th>الوقت</th>
+                        <th>الموظف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>INV-091</td>
+                        <td>Panadol, Vit C</td>
+                        <td>$16.00</td>
+                        <td>10:45 AM</td>
+                        <td>EMP-01</td>
+                    </tr>
+                    <tr>
+                        <td>INV-090</td>
+                        <td>Amoxicillin</td>
+                        <td>$45.50</td>
+                        <td>10:12 AM</td>
+                        <td>EMP-02</td>
+                    </tr>
+                    <tr>
+                        <td>INV-089</td>
+                        <td>Nexium</td>
+                        <td>$22.00</td>
+                        <td>09:30 AM</td>
+                        <td>EMP-01</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inventory Admin View -->
+    <div id="inventory-admin" class="view">
+        <h3 style="margin-bottom: 15px; color: var(--accent-blue);"><i data-lucide="plus-circle"></i> إضافة مشتريات جديدة</h3>
+        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim); margin-bottom: 20px;">
+            <div class="form-group">
+                <label>اسم الدواء (English)</label>
+                <input type="text" placeholder="e.g. Augmentin 625mg">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>الكمية</label>
+                    <input type="number" placeholder="0">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>الموقع (جدار/رف/خلية)</label>
+                    <input type="text" placeholder="W1-R5-C10">
+                </div>
+            </div>
+            <button class="btn-add" style="margin-bottom: 0;"><i data-lucide="save"></i> حفظ في المخزون</button>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="color: var(--accent-blue); font-size: 1rem;"><i data-lucide="layout-grid"></i> عرض المخزون</h3>
+            <div style="display: flex; gap: 5px;">
+                <button onclick="toggleInvView('3d')" id="btn3d" style="padding: 5px 10px; font-size: 0.7rem; background: var(--accent-blue); color: white; border: none; border-radius: 4px; cursor: pointer;">3D</button>
+                <button onclick="toggleInvView('hd')" id="btnHd" style="padding: 5px 10px; font-size: 0.7rem; background: var(--button); color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 4px; cursor: pointer;">شبكة عالية</button>
+            </div>
+        </div>
+
+        <div id="inv-3d-view">
+            <div style="font-size: 0.7rem; color: var(--text-muted); text-align: center; margin-bottom: 10px;">اسحب للتنقل بين الجدران</div>
+            <div class="scene" style="height: 300px;">
+                <div class="walls-container" id="adminWallsContainer"></div>
+            </div>
+        </div>
+
+        <div id="inv-hd-view" style="display: none;">
+            <div class="hd-grid" id="hdGrid">
+                <!-- HD cells will be injected -->
+            </div>
+        </div>
+
+        <h3 style="margin-top: 25px; margin-bottom: 10px; color: var(--accent-blue);"><i data-lucide="scan-eye"></i> تدقيق الذكاء الاصطناعي (AI Audit)</h3>
+        <p style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 10px;">قم بتوجيه الكاميرا نحو الرف لمطابقة العدد الفعلي مع النظام.</p>
+        <div class="ai-scanner-mock" id="aiScanner">
+            <div class="scanner-line"></div>
+            <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.5); padding: 5px; border-radius: 4px; color: white; font-size: 0.6rem;">LIVE FEED</div>
+            <div id="scanResult" style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--dropdown); padding: 10px; border-radius: 8px; border: 1px solid var(--accent-blue); width: 80%; animation: popOut 0.3s;">
+                <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 5px;">نتيجة الفحص: Panadol Advance</div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold;">
+                    <span>العدد في النظام: 45</span>
+                    <span style="color: var(--active);">العدد الفعلي: 45</span>
+                </div>
+                <button onclick="document.getElementById('scanResult').style.display='none'" style="width: 100%; margin-top: 10px; padding: 5px; background: var(--accent-blue); border: none; border-radius: 4px; color: white; font-size: 0.7rem;">تأكيد المطابقة</button>
+            </div>
+        </div>
+        <button onclick="startScan()" class="btn-print" style="margin-bottom: 20px; border-radius: 8px;"><i data-lucide="camera"></i> تشغيل ماسح AI</button>
+    </div>
+
+    <!-- Finance View -->
+    <div id="finance" class="view">
+        <h3 style="margin-bottom: 15px; color: var(--accent-blue);"><i data-lucide="calculator"></i> المتتبع المالي</h3>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <button class="btn-add" style="margin-bottom: 0; background: #2e7d32;" onclick="addFinance('income')"><i data-lucide="plus"></i> إضافة دخل</button>
+            <button class="btn-add" style="margin-bottom: 0; background: #c62828;" onclick="addFinance('expense')"><i data-lucide="minus"></i> إضافة نفقة</button>
+        </div>
+
+        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim);">
+            <div class="form-group">
+                <label>نوع العملية</label>
+                <select id="financeType">
+                    <option value="rent">إيجار</option>
+                    <option value="electricity">كهرباء</option>
+                    <option value="salary">رواتب</option>
+                    <option value="other">أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>المبلغ</label>
+                <input type="number" id="financeAmount" placeholder="0.00" oninput="calculateProfit()">
+            </div>
+        </div>
+
+        <div class="profit-calc">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">إجمالي المبيعات (الوقت الفعلي):</span>
+                <span style="color: var(--accent-yellow); font-weight: bold;">$1,250.50</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: var(--text-muted); font-size: 0.9rem;">إجمالي النفقات:</span>
+                <span id="totalExpenses" style="color: #ff9999; font-weight: bold;">$0.00</span>
+            </div>
+            <div style="border-top: 1px solid var(--border-dim); padding-top: 10px; display: flex; justify-content: space-between;">
+                <span style="color: white; font-weight: bold;">صافي الربح:</span>
+                <span id="netProfit" style="color: var(--active); font-weight: bold; font-size: 1.2rem;">$1,250.50</span>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 25px; margin-bottom: 15px; color: var(--accent-blue); font-size: 1rem;"><i data-lucide="file-text"></i> التقارير المالية</h3>
+        <div class="admin-stats-grid">
+            <div class="stat-card" style="padding: 10px;">
+                <h3 style="font-size: 0.6rem;">يومي</h3>
+                <div class="value" style="font-size: 0.9rem;">$450</div>
+            </div>
+            <div class="stat-card" style="padding: 10px;">
+                <h3 style="font-size: 0.6rem;">أسبوعي</h3>
+                <div class="value" style="font-size: 0.9rem;">$3,200</div>
+            </div>
+            <div class="stat-card" style="padding: 10px;">
+                <h3 style="font-size: 0.6rem;">شهري</h3>
+                <div class="value" style="font-size: 0.9rem;">$12,800</div>
+            </div>
+            <div class="stat-card" style="padding: 10px;">
+                <h3 style="font-size: 0.6rem;">سنوي</h3>
+                <div class="value" style="font-size: 0.9rem;">$150,000</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Admin View -->
+    <div id="settings-admin" class="view">
+        <h3 style="margin-bottom: 15px; color: var(--accent-blue);"><i data-lucide="shield-check"></i> إعدادات النظام</h3>
+
+        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim); margin-bottom: 20px;">
+            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">العلامة التجارية</h4>
+            <div class="form-group">
+                <label>اسم الصيدلية</label>
+                <input type="text" value="صيدلية يمان">
+            </div>
+            <div class="form-group">
+                <label>تحميل الشعار (PNG)</label>
+                <button style="width: 100%; padding: 10px; background: var(--button); border: 1px dashed var(--border-dim); color: var(--text-muted); border-radius: 8px;"><i data-lucide="upload"></i> اختر ملفاً</button>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim); margin-bottom: 20px;">
+            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">إدارة الموظفين</h4>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--button); padding: 10px; border-radius: 8px;">
+                    <span style="font-size: 0.8rem; color: var(--text-light);">حذفذف (مدير)</span>
+                    <i data-lucide="edit-2" style="width: 14px; color: var(--accent-blue);"></i>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--button); padding: 10px; border-radius: 8px;">
+                    <span style="font-size: 0.8rem; color: var(--text-light);">أحمد محمد (موظف)</span>
+                    <i data-lucide="edit-2" style="width: 14px; color: var(--accent-blue);"></i>
+                </div>
+            </div>
+            <button class="btn-add" style="margin-top: 15px; margin-bottom: 0;"><i data-lucide="user-plus"></i> إضافة حساب موظف</button>
+        </div>
+
+        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim);">
+            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">إعدادات تقنية</h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">حالة الطابعة</span>
+                <span style="color: #4caf50; font-size: 0.7rem; font-weight: bold;">متصل <i data-lucide="check-circle" style="width:12px;"></i></span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">النسخ الاحتياطي السحابي</span>
+                <span style="color: var(--accent-blue); font-size: 0.7rem; font-weight: bold;">مفعل <i data-lucide="cloud-check" style="width:12px;"></i></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="assets/lucide.min.js"></script>
+<script>
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        element.classList.add('active');
+    }
+
+    function toggleInvView(view) {
+        const d3 = document.getElementById('inv-3d-view');
+        const hd = document.getElementById('inv-hd-view');
+        const btn3d = document.getElementById('btn3d');
+        const btnHd = document.getElementById('btnHd');
+
+        if(view === '3d') {
+            d3.style.display = 'block';
+            hd.style.display = 'none';
+            btn3d.style.background = 'var(--accent-blue)';
+            btn3d.style.color = 'white';
+            btnHd.style.background = 'var(--button)';
+            btnHd.style.color = 'var(--text-muted)';
+        } else {
+            d3.style.display = 'none';
+            hd.style.display = 'block';
+            btnHd.style.background = 'var(--accent-blue)';
+            btnHd.style.color = 'white';
+            btn3d.style.background = 'var(--button)';
+            btn3d.style.color = 'var(--text-muted)';
+        }
+    }
+
+    // Initialize 3D Walls for Admin
+    const adminWallsContainer = document.getElementById('adminWallsContainer');
+    const hdGrid = document.getElementById('hdGrid');
+    const drugs = ['Amoxil', 'Panadol', 'Voltaren', 'Nexium', 'Lipitor', 'Zyrtec', 'Aspirin'];
+
+    for(let w=1; w<=3; w++) {
+        let wall = document.createElement('div');
+        wall.className = 'wall';
+        wall.style.width = '300px'; // Smaller for admin view
+        wall.style.height = '200px';
+        wall.style.gridTemplateColumns = 'repeat(10, 1fr)';
+        wall.style.gridTemplateRows = 'repeat(8, 1fr)';
+
+        for(let i=0; i<80; i++) {
+            let cell = document.createElement('div');
+            cell.className = 'shelf-cell';
+            cell.innerHTML = `<span style="font-size:0.4rem; color:var(--text-light)">${w}-${i}</span>`;
+            wall.appendChild(cell);
+
+            // Add to HD Grid
+            let hdCell = document.createElement('div');
+            hdCell.className = 'hd-cell';
+            hdCell.innerText = drugs[Math.floor(Math.random() * drugs.length)];
+            hdGrid.appendChild(hdCell);
+        }
+        adminWallsContainer.appendChild(wall);
+    }
+
+    function startScan() {
+        const result = document.getElementById('scanResult');
+        result.style.display = 'block';
+    }
+
+    let totalSales = 1250.50;
+    let currentExpenses = 0;
+
+    function calculateProfit() {
+        const amount = parseFloat(document.getElementById('financeAmount').value) || 0;
+        const totalExpSpan = document.getElementById('totalExpenses');
+        const netProfitSpan = document.getElementById('netProfit');
+
+        // Note: In a real app, this would be more complex, tracking a list of entries.
+        // For mockup, we just use the current value of the input as the "new" expense if they are adding one.
+        // Here we just update the UI preview.
+        const previewExp = currentExpenses + amount;
+        const previewProfit = totalSales - previewExp;
+
+        totalExpSpan.innerText = `$${previewExp.toFixed(2)}`;
+        netProfitSpan.innerText = `$${previewProfit.toFixed(2)}`;
+    }
+
+    function addFinance(type) {
+        const amount = parseFloat(document.getElementById('financeAmount').value) || 0;
+        if(amount <= 0) return alert("الرجاء إدخال مبلغ صحيح");
+
+        if(type === 'expense') {
+            currentExpenses += amount;
+        } else {
+            totalSales += amount;
+        }
+
+        document.getElementById('financeAmount').value = '';
+        calculateProfit();
+        alert("تمت الإضافة بنجاح");
+    }
+</script>
+</body>
+</html>
