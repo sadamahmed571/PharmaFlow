@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaFlow نظام ادارة الصيدليات - العملاء</title>
+    <link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/customers.css">
+</head>
+
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="logo-container">
+            <img src="img/logo.jpg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <h1 class="header-title"> صيدلية الشفاء</h1>
+        </div>
+        <div class="header-actions">
+            <div class="user-profile">
+                <span class="user-name">سامي</span>
+                <i data-lucide="user"></i>
+            </div>
+			<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="تغيير الثيم">
+                <i data-lucide="moon" id="themeIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="index.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
+        <a href="inventory.html" class="tab"  ><i data-lucide="layers"></i> المخزن</a>
+        <a href="customers.html" class="tab active"  ><i data-lucide="users"></i> العملاء</a>
+        <a href="admin.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
+    </div>
+
+    <div id="customers" class="view active">
+        <!-- حاوية المحتوى مع position relative للنافذة المنبثقة -->
+        <div class="customers-content-wrapper">
+            <!-- قسم لوحة المؤشرات السريعة (Power of 3) -->
+            <div class="metrics-bar">
+            <div class="metric-widget debt-widget">
+                <div class="metric-icon"><i data-lucide="alert-circle"></i></div>
+                <div class="metric-content">
+                    <span class="metric-value" id="totalDebt">$0.00</span>
+                    <span class="metric-label">إجمالي الديون القائمة</span>
+                </div>
+            </div>
+            <div class="metric-widget activity-widget">
+                <div class="metric-icon"><i data-lucide="activity"></i></div>
+                <div class="metric-content">
+                    <span class="metric-value" id="todayActivity">0</span>
+                    <span class="metric-label">نشاط العملاء (24س)</span>
+                </div>
+            </div>
+            <div class="metric-widget collection-widget">
+                <div class="metric-icon"><i data-lucide="percent"></i></div>
+                <div class="metric-content">
+                    <span class="metric-value" id="collectionRate">0%</span>
+                    <span class="metric-label">مؤشر التحصيل</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- حاوية التحكم والفرز -->
+        <div class="control-hub">
+            <div class="control-row-1">
+                <div class="search-box search-container">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="customerSearch" placeholder="البحث بالاسم، رقم الهاتف، أو كود العميل..." oninput="filterCustomers()">
+                </div>
+                <button class="action-btn-primary" onclick="openAddCustomerModal()">
+                    <i data-lucide="user-plus" class="btn-icon"></i> <span class="btn-text">إضافة عميل</span>
+                </button>
+            </div>
+            <div class="control-row-2">
+                <div class="filter-pills">
+                    <button class="filter-pill active" data-filter="all" onclick="filterByStatus('all', this)">
+                        <i data-lucide="layout-grid"></i> جميع الفلاتر
+                    </button>
+                    <button class="filter-pill" data-filter="debt" onclick="filterByStatus('debt', this)">
+                        <i data-lucide="alert-triangle"></i> عليهم ديون
+                    </button>
+                </div>
+                <div class="date-filter">
+                    <select id="dateFilter" onchange="filterByDate(this.value)">
+                        <option value="all">جميع الفترات</option>
+                        <option value="today">اليوم</option>
+                        <option value="week">هذا الأسبوع</option>
+                        <option value="month">هذا الشهر</option>
+                        <option value="year">هذه السنة</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- سجل العملاء الرئيسي -->
+        <div class="customers-table-container">
+            <table class="customers-table">
+                <thead>
+                    <tr>
+                      
+                        <th onclick="sortCustomers('name', this)" class="sortable">
+                            العميل <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                        </th>
+                        <th onclick="sortCustomers('status', this)" class="sortable">
+                            الحالة المالية <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                        </th>
+                        <th onclick="sortCustomers('type', this)" class="sortable">
+                            نوع التعامل <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                        </th>
+						  <th class="serial-col">#</th>
+                    </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                    <!-- سيتم ملؤه بالجافاسكريبت -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- نافذة تفاصيل العميل (Flyout) - مطابقة لنافذة المخزون -->
+        <div id="customerFlyout" class="quick-flyout">
+            <div class="flyout-header">
+                <h4 id="flyoutCustomerName">تفاصيل العميل</h4>
+                <button class="close-flyout" onclick="closeCustomerFlyout()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="flyout-content">
+                <!-- القسم الأول: البيانات المشتركة والمالية -->
+                <div class="flyout-section">
+                    <h5 class="section-title"><i data-lucide="user" class="section-title-icon"></i> البيانات المشتركة والمالية</h5>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="user-circle"></i> اسم العميل</span>
+                            <span id="flyoutCustomerNameDetail" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="hash"></i> كود العميل</span>
+                            <span id="flyoutCustomerCode" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="phone"></i> رقم الهاتف</span>
+                            <span id="flyoutCustomerPhone" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="wallet"></i> إجمالي المسحوب</span>
+                            <span id="flyoutTotalCredit" class="summary-value value-highlight">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="check-circle"></i> المبالغ المدفوعة</span>
+                            <span id="flyoutTotalPaid" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label"><i data-lucide="alert-circle"></i> المتبقي</span>
+                            <span id="flyoutRemaining" class="summary-value">-</span>
+                        </div>
+                        <div class="summary-item full-width">
+                            <span class="summary-label"><i data-lucide="activity"></i> آخر نشاط</span>
+                            <div class="activity-wrapper">
+                                <span id="flyoutLastActivityDate" class="summary-value">-</span>
+                                <span id="flyoutLastActivityType" class="qty-status">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الثاني: الفواتير والإجراءات (Widgets) -->
+                <div class="flyout-section">
+                    <h5 class="section-title"><i data-lucide="file-text" class="section-title-icon"></i> الفواتير والإجراءات</h5>
+                    <div id="flyoutWidgetsContainer" class="batches-widgets-container">
+                        <!-- سيتم ملؤه بالجافاسكريبت -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="assets/lucide.min.js"></script>
+<script>
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const themes = [
+        { id: 'default', name: 'الافتراضي (Dark Teal)', icon: 'moon' },
+        { id: 'light-pro', name: 'المشرق الرسمي (Academic)', icon: 'sun' },
+        { id: 'light-vibrant', name: 'الحيوي المشرق (Health)', icon: 'sparkles' },
+        { id: 'dark-obsidian', name: 'العميق المظلم (Obsidian)', icon: 'zap' }
+    ];
+    let currentThemeIndex = 0;
+
+    function toggleTheme() {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        const theme = themes[currentThemeIndex];
+        const body = document.body;
+        const icon = document.getElementById('themeIcon');
+        const btn = document.getElementById('themeToggle');
+
+        body.removeAttribute('data-theme');
+        if (theme.id !== 'default') {
+            body.setAttribute('data-theme', theme.id);
+        }
+
+        icon.setAttribute('data-lucide', theme.icon);
+        btn.title = `تبديل الثيم: ${theme.name}`;
+
+        if(typeof lucide !== 'undefined') lucide.createIcons();
+    }
+</script>
+<script src="js/customers.js"></script>
+</body>
+</html>

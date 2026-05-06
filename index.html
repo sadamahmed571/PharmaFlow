@@ -18,7 +18,9 @@
             <h1 class="header-title"> صيدلية الشفاء</h1>
         </div>
         <div class="header-actions">
-
+            <a href="customers.html" class="header-nav-btn" title="العملاء">
+                <i data-lucide="users"></i>
+            </a>
             <div class="user-profile">
                 <span class="user-name">سامي</span>
                 <i data-lucide="user"></i>
@@ -30,17 +32,109 @@
     </div>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('sales', this)"><i data-lucide="shopping-cart"></i> المبيعات</div>
-        <div class="tab" onclick="switchTab('inventory', this)"><i data-lucide="layers"></i> الرفوف</div>
-        <div class="tab" onclick="switchTab('ar', this)"><i data-lucide="scan-line"></i> AR</div>
-        <div class="tab" onclick="switchTab('recent', this)"><i data-lucide="history"></i> السجل</div>
-
+        <a href="index.html" class="tab active"  ><i data-lucide="shopping-cart"></i> المبيعات</a>
+        <a href="inventory.html" class="tab"  ><i data-lucide="layers"></i> المخزن</a>
+        <a href="customers.html" class="tab"  ><i data-lucide="users"></i> العملاء</a>
+        <a href="admin.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
     </div>
 
 
     <div id="sales" class="view active">
-	    <!-- حاوية بيانات العميل الجديدة -->
+	    <h3 class="reports-title"><i data-lucide="clipboard-list"></i> عملية بيع جديدة</h3>
+        <div class="ai-bubble" id="aiBubble">
+            <strong><i data-lucide="sparkles"></i> لمحة AI :</strong>
+            <span id="aiText"></span>
+        </div>
+		<!-- ادوات اضافة الادوية -->
+        <div class="drug-tools-row">
+            <div class="search-box search-container">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="drugSearch" placeholder="ابحث عن دواء (مثال: Amoxicillin)..." oninput="handleSearch()" onfocus="showDropdown()">
+                <div id="searchDropdown" class="dropdown-list"></div>
+            </div>
+            <div class="action-buttons-container">
+                <button class="action-btn barcode-btn" onclick="openScanner()">
+                    <i data-lucide="scan-barcode"></i> باركود
+                </button>
+                <button class="action-btn prescription-btn" onclick="scanPrescription()">
+                    <i data-lucide="file-text"></i> وصفة
+                </button>
+            </div>
+        </div>
+
+        <div class="qty-presets">
+            <button class="active"><i data-lucide="package" class="qty-presets-icon"></i> باكت</button>
+            <button><i data-lucide="box" class="qty-presets-icon"></i> علبة</button>
+            <button><i data-lucide="pill" class="qty-presets-icon"></i> شريط</button>
+            <button><i data-lucide="syringe" class="qty-presets-icon"></i> حقنة</button>
+            <button id="customUnitBtn" onclick="enableCustomUnit()"><i data-lucide="pen-tool" class="qty-presets-icon"></i> مخصص</button>
+            <input type="text" id="customUnitInput" placeholder="إدخال..." onblur="disableCustomUnit(this)">
+        </div>
+          
+        <div class="qty-input-group">
+		 <h4 class="subtitle"><i data-lucide="layers"></i> الكمية</h4>
+		 
+            <button class="qty-btn" onclick="updateQty(1)">+</button>
+            <div class="qty-input-wrapper">
+                <input type="number" id="qtyInput" value="1" min="1">
+                <span id="qtyUnitLabel" class="qty-unit-label">باكت</span>
+            </div>
+            <button class="qty-btn" onclick="updateQty(-1)">-</button>
+        </div>
+
+        <div class="price-row">
+            <div class="price-box">
+                <label><i data-lucide="tag" class="price-icon"></i> سعر الوحدة</label>
+                <span id="unitPrice">$0.00</span>
+            </div>
+            <div class="price-box">
+                <label><i data-lucide="wallet" class="price-icon"></i> اجمالي سعر الدواء</label>
+                <span id="totalPrice">$0.00</span>
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="addProduct()"><i data-lucide="plus-circle"></i> إضافة دواء</button>
+		
+          <h4 class="subtitle2"><i data-lucide="shopping-basket"></i> الأدوية المضافة للفاتورة</h4>   
+        <div id="addedDrugsContainer" class="added-drugs-container">
+		
+		</div>        <!-- شاشة تسوية الفاتورة (التي تم نقلها) -->
+        <div id="settlementSection" class="settlement-section">
+		 <h4 class="subtitle2"><i data-lucide="banknote"></i> الدفع</h4>
+            <div class="payment-method-toggle">
+                <button class="payment-btn active" id="cashBtn" onclick="setPaymentMethod('cash')">
+                    <i data-lucide="banknote"></i> نقدي
+                </button>
+                <button class="payment-btn" id="partialBtn" onclick="setPaymentMethod('partial')">
+                    <i data-lucide="pie-chart"></i> دفع جزئي
+                </button>
+                <button class="payment-btn" id="creditBtn" onclick="setPaymentMethod('credit')">
+                    <i data-lucide="credit-card"></i> آجل
+                </button>
+            </div>
+            <div class="settlement-row">
+                <div id="paidAmountContainer" class="paid-amount-container">
+                    <div id="paidAmountWrapper" class="paid-amount-wrapper">
+                        <div class="settlement-input-row">
+						    <span class="settlement-label-text">المبلغ المدفوع</span>
+                            <input type="number" id="paidAmount" class="settlement-input" placeholder="0.00" oninput="calculateChange()" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div id="changeDisplayWrapper" class="change-display-wrapper">
+                    <div class="change-display-box" id="changeDisplay">
+					<span id="changeLabel" class="change-label-text">المتبقي</span>
+                        <div class="settlement-input-row">
+                            <span id="changeAmount" class="change-amount-text">$0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		
+		 <!-- حاوية بيانات العميل الجديدة -->
         <div class="customer-advanced-section">
+		<h4 class="subtitle2"><i data-lucide="user-cog"></i> بيانات العميل</h4>
             <div class="customer-row">
                 <div class="customer-name-col">
                     <div class="input-with-icon">
@@ -72,87 +166,6 @@
                 <div class="checkbox-group">
                     <input type="checkbox" id="sameAsPhone" onchange="syncPhoneToWhatsapp()" checked>
                     <label for="sameAsPhone" class="checkbox-label">نفس رقم الهاتف</label>
-                </div>
-            </div>
-        </div>
-        <div class="ai-bubble" id="aiBubble">
-            <strong><i data-lucide="sparkles"></i> لمحة AI :</strong>
-            <span id="aiText"></span>
-        </div>
-		<!-- ادوات اضافة الادوية -->
-        <div class="drug-tools-row">
-            <div class="search-box search-container">
-                <i data-lucide="search" class="search-icon"></i>
-                <input type="text" id="drugSearch" placeholder="ابحث عن دواء (مثال: Amoxicillin)..." oninput="handleSearch()" onfocus="showDropdown()">
-                <div id="searchDropdown" class="dropdown-list"></div>
-            </div>
-            <div class="action-buttons-container">
-                <button class="action-btn barcode-btn" onclick="openScanner()">
-                    <i data-lucide="scan-barcode"></i> باركود
-                </button>
-                <button class="action-btn prescription-btn" onclick="scanPrescription()">
-                    <i data-lucide="file-text"></i> وصفة
-                </button>
-            </div>
-        </div>
-
-        <div class="qty-presets">
-            <button class="active"><i data-lucide="package"></i> باكت</button>
-            <button><i data-lucide="tablets"></i> علبة</button>
-            <button><i data-lucide="pill"></i> شريط</button>
-            <button><i data-lucide="syringe"></i> حقنة</button>
-            <button id="customUnitBtn" onclick="enableCustomUnit()"><i data-lucide="pen-tool"></i> مخصص</button>
-            <input type="text" id="customUnitInput" placeholder="إدخال..." onblur="disableCustomUnit(this)">
-        </div>
-
-        <div class="qty-input-group">
-            <button class="qty-btn" onclick="updateQty(1)">+</button>
-            <input type="number" id="qtyInput" value="1" min="1">
-            <button class="qty-btn" onclick="updateQty(-1)">-</button>
-        </div>
-
-        <div class="price-row">
-            <div class="price-box">
-                <label><i data-lucide="tag" class="price-icon"></i> سعر الوحدة</label>
-                <span id="unitPrice">$0.00</span>
-            </div>
-            <div class="price-box">
-                <label><i data-lucide="wallet" class="price-icon"></i> اجمالي سعر الدواء</label>
-                <span id="totalPrice">$0.00</span>
-            </div>
-        </div>
-
-        <button class="btn-add" onclick="addProduct()"><i data-lucide="plus-circle"></i> إضافة دواء</button>
-
-        <div id="addedDrugsContainer" class="added-drugs-container"></div>        <!-- شاشة تسوية الفاتورة (التي تم نقلها) -->
-        <div id="settlementSection" class="settlement-section">
-            <div class="payment-method-toggle">
-                <button class="payment-btn active" id="cashBtn" onclick="setPaymentMethod('cash')">
-                    <i data-lucide="banknote"></i> نقدي
-                </button>
-                <button class="payment-btn" id="partialBtn" onclick="setPaymentMethod('partial')">
-                    <i data-lucide="pie-chart"></i> دفع جزئي
-                </button>
-                <button class="payment-btn" id="creditBtn" onclick="setPaymentMethod('credit')">
-                    <i data-lucide="credit-card"></i> آجل
-                </button>
-            </div>
-            <div class="settlement-row">
-                <div id="paidAmountContainer" class="paid-amount-container">
-                    <div id="paidAmountWrapper" class="paid-amount-wrapper">
-                        <div class="settlement-input-row">
-						    <span class="settlement-label-text">المبلغ المدفوع</span>
-                            <input type="number" id="paidAmount" class="settlement-input" placeholder="0.00" oninput="calculateChange()" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div id="changeDisplayWrapper" class="change-display-wrapper">
-                    <div class="change-display-box" id="changeDisplay">
-					<span id="changeLabel" class="change-label-text">المتبقي</span>
-                        <div class="settlement-input-row">
-                            <span id="changeAmount" class="change-amount-text">$0.00</span>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -189,97 +202,120 @@
 
         <button class="btn-print" onclick="printReceipt()"><i data-lucide="printer"></i> إصدار / طباعة الفاتورة</button>
 
-        <!-- إحصائيات الدخل اليومي -->
-        <div class="daily-stats">
-            <div class="stat-card">
-                <i data-lucide="trending-up"></i>
-                <div>
-                    <span class="stat-label">الدخل اليوم</span>
-                    <span class="stat-value" id="dailyIncome">$0.00</span>
+
+        <div id="recent" class="recent-sales-section">
+            <h3 class="reports-title"><i data-lucide="clipboard-list"></i> تقارير المبيعات</h3>
+
+            <!-- إحصائيات الدخل اليومي -->
+            <div class="daily-stats">
+                <div class="stat-card">
+                    <i data-lucide="trending-up"></i>
+                    <div>
+                        <span class="stat-label">الدخل اليوم</span>
+                        <span class="stat-value" id="dailyIncome">$0.00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i data-lucide="shopping-bag"></i>
+                    <div>
+                        <span class="stat-label"> الفواتير</span>
+                        <span class="stat-value" id="invoiceCount">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i data-lucide="clock"></i>
+                    <div>
+                        <span class="stat-label">آخر عملية</span>
+                        <span class="stat-value" id="lastSale">--:--</span>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card">
-                <i data-lucide="shopping-bag"></i>
-                <div>
-                    <span class="stat-label"> الفواتير</span>
-                    <span class="stat-value" id="invoiceCount">0</span>
+
+            <!-- سجل العمليات (Log) -->
+            <h4 class="reports-subtitle"><i data-lucide="activity"></i> سجل العمليات</h4>
+            
+            <div class="log-controls-row">
+                <div class="log-search-container" style="width: 70%;">
+                    <i data-lucide="search" class="log-search-icon"></i>
+                    <input type="text" placeholder="بحث في السجل..." class="log-search-input">
+                </div>
+                <div class="log-actions-container" style="width: 30%;">
+                    <button class="log-action-btn" title="تصفية"><i data-lucide="filter"></i></button>
+                    <button class="log-action-btn" title="تصدير"><i data-lucide="download"></i></button>
                 </div>
             </div>
-            <div class="stat-card">
-                <i data-lucide="clock"></i>
-                <div>
-                    <span class="stat-label">آخر عملية</span>
-                    <span class="stat-value" id="lastSale">--:--</span>
+
+            <div id="salesLogContainer" class="sales-log-container">
+                <div class="log-entry">
+                    <div class="log-time-col">
+                        <span class="log-time">10:45 ص</span>
+                        <div class="log-connector"></div>
+                    </div>
+                    <div class="log-content-col">
+                        <div class="log-header">
+                            <span class="log-id font-mono">OP-8821</span>
+                            <span class="log-amount positive">+$45.50</span>
+                        </div>
+                        <div class="log-summary">
+                            <span class="log-desc">بيع نقدي - 3 عناصر</span>
+                            <div class="log-customer"><i data-lucide="user"></i> عميل نقدي</div>
+                            <i data-lucide="chevron-down" class="log-expand-icon"></i>
+                        </div>
+                        <div class="log-details">
+                            <div class="log-detail-item"><strong>الموظف:</strong> سامي</div>
+                            <div class="log-detail-item"><strong>الأدوية:</strong> بنادول، أموكسيل، فيتامين سي</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="log-entry">
+                    <div class="log-time-col">
+                        <span class="log-time">10:12 ص</span>
+                        <div class="log-connector"></div>
+                    </div>
+                    <div class="log-content-col">
+                        <div class="log-header">
+                            <span class="log-id font-mono">OP-8820</span>
+                            <span class="log-amount pending">-$12.00</span>
+                        </div>
+                        <div class="log-summary">
+                            <span class="log-desc">بيع آجل - عنصر واحد</span>
+                            <div class="log-customer"><i data-lucide="user"></i> احمد محمد</div>
+                            <i data-lucide="chevron-down" class="log-expand-icon"></i>
+                        </div>
+                        <div class="log-details">
+                            <div class="log-detail-item"><strong>الموظف:</strong> سامي</div>
+                            <div class="log-detail-item"><strong>الأدوية:</strong> لوراتادين</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="log-entry" onclick="this.classList.toggle('expanded')">
+                    <div class="log-time-col">
+                        <span class="log-time">09:30 ص</span>
+                        <div class="log-connector" style="display: none;"></div>
+                    </div>
+                    <div class="log-content-col">
+                        <div class="log-header">
+                            <span class="log-id font-mono">OP-8819</span>
+                            <span class="log-amount partial">+$20.00 / $50.00</span>
+                        </div>
+                        <div class="log-summary">
+                            <span class="log-desc">دفع جزئي - 5 عناصر</span>
+                            <div class="log-customer"><i data-lucide="user"></i> خالد عبدالله</div>
+                            <i data-lucide="chevron-down" class="log-expand-icon"></i>
+                        </div>
+                        <div class="log-details">
+                            <div class="log-detail-item"><strong>الموظف:</strong> سامي</div>
+                            <div class="log-detail-item"><strong>الأدوية:</strong> أوميبرازول، كونكور، أسبرين، زيرتيك، فولتارين</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="inventory" class="view">
-        <div class="inventory-info">
-            <i data-lucide="info" class="icon-small"></i> اسحب لليمين/اليسار لتصفح الجدران. اضغط على أي خلية لعرض الأدوية.
-        </div>
-        <div class="scene">
-            <div class="walls-container" id="wallsContainer"></div>
-        </div>
-    </div>
 
-    <div id="ar" class="view">
-        <h3 class="ar-title"><i data-lucide="scan-face"></i> مستكشف الكاميرا المعزز</h3>
-        <p class="ar-desc">
-            محاكاة استخدام الكاميرا للتعرف على المخزون بشكل مكاني فوق الرفوف الحقيقية.
-        </p>
-        <button class="btn-add" onclick="document.getElementById('arMockup').style.display='block'"><i data-lucide="camera"></i> تشغيل SkyView</button>
 
-        <div class="ar-container" id="arMockup" style="display: none;">
-            <div class="ar-grid"></div>
-            <div class="ar-label" style="top: 20%; left: 10%;">Panadol: 45 Box</div>
-            <div class="ar-label" style="top: 50%; left: 60%;">Augmentin: 12 Box</div>
-            <div class="ar-label" style="top: 75%; left: 30%;">Vitamin C: 88 Units</div>
-            <div class="ar-label ar-label-low" style="top: 35%; left: 80%;">Aspirin: LOW (2)</div>
-        </div>
-    </div>
 
-    <div id="recent" class="view">
-        <h3 class="reports-title"><i data-lucide="clipboard-list"></i> تقارير المبيعات</h3>
-
-        <!-- ملخص اليوم -->
-        <div class="sales-summary">
-            <div class="summary-item">
-                <i data-lucide="dollar-sign"></i>
-                <div>
-                    <span>إجمالي المبيعات</span>
-                    <strong id="totalSales">$0.00</strong>
-                </div>
-            </div>
-            <div class="summary-item">
-                <i data-lucide="users"></i>
-                <div>
-                    <span>العملاء الآجلين</span>
-                    <strong id="creditCustomers">0</strong>
-                </div>
-            </div>
-            <div class="summary-item">
-                <i data-lucide="package"></i>
-                <div>
-                    <span>الأكثر مبيعاً</span>
-                    <strong id="topProduct">--</strong>
-                </div>
-            </div>
-        </div>
-
-        <!-- قائمة الفواتير -->
-        <h4 class="reports-subtitle">آخر الفواتير</h4>
-        <div id="salesList">
-            <div class="recent-item">
-                <div><span>INV-090</span><br><small>10:45 ص • 3 عناصر • نقدي</small></div>
-                <div class="recent-item-value">$45.50</div>
-            </div>
-            <div class="recent-item">
-                <div><span>INV-089</span><br><small>10:12 ص • عنصر واحد • آجل</small></div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- حاوية الماسح الضوئي للوصفات (Overlay) -->
@@ -320,12 +356,7 @@
         lucide.createIcons();
     }
 
-    function switchTab(tabId, element) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        element.classList.add('active');
-    }
+
 
     const themes = [
         { id: 'default', name: 'الافتراضي (Dark Teal)', icon: 'moon' },
@@ -359,10 +390,6 @@
 <script>
     window.onload = () => {
         if (typeof initSales === 'function') initSales();
-
-        if(window.innerWidth >= 768) {
-            switchTab('inventory', document.querySelectorAll('.tab')[1]);
-        }
     }
 
     setInterval(() => {
@@ -373,75 +400,7 @@
         }
     }, 1000);
 
-    // إنشاء جدران المخزون ثلاثي الأبعاد
-    const wallsContainer = document.getElementById('wallsContainer');
-    if (wallsContainer) {
-        const randomDrugsList = ['Amoxil', 'Panadol', 'Voltaren', 'Nexium', 'Lipitor', 'Zyrtec', 'Aspirin', 'Metformin', 'Concor', 'Lasix'];
 
-        for(let w=1; w<=3; w++) {
-            let wall = document.createElement('div');
-            wall.className = 'wall';
-
-            for(let r=1; r<=15; r++) {
-                for(let c=1; c<=20; c++) {
-                    let shelf = document.createElement('div');
-                    shelf.className = 'shelf-cell';
-
-                    let randStatus = Math.random();
-                    let statusClass = '';
-                    let highlightClass = '';
-
-                    if (randStatus > 0.95) {
-                        statusClass = 'status-low';
-                        highlightClass = 'highlight-low';
-                    } else if (randStatus > 0.90) {
-                        statusClass = 'status-expiry';
-                        highlightClass = 'highlight-expiry';
-                    }
-
-                    if(statusClass) shelf.classList.add(statusClass);
-
-                    shelf.innerHTML = `<span class="cell-coord">ج${w}</span>`;
-
-                    let popup = document.createElement('div');
-                    popup.className = 'cell-popup';
-
-                    let numItems = Math.floor(Math.random() * 3) + 3;
-                    let popupHTML = `<div class="popup-header">الإحداثيات: جدار ${w} - صف ${r} - عمود ${c}</div>`;
-
-                    for(let i=0; i<numItems; i++) {
-                        let dName = randomDrugsList[Math.floor(Math.random() * randomDrugsList.length)];
-                        let dQty = Math.floor(Math.random() * 40) + 1;
-
-                        let lineClass = (statusClass && i === 0) ? highlightClass : '';
-                        if (highlightClass == 'highlight-low') dQty = Math.floor(Math.random() * 3) + 1;
-
-                        popupHTML += `<div class="drug-line ${lineClass}"><span>${dName}</span> <span class="drug-Qty">${dQty}</span></div>`;
-                    }
-                    popup.innerHTML = popupHTML;
-                    shelf.appendChild(popup);
-
-                    shelf.onclick = function(e) {
-                        document.querySelectorAll('.shelf-cell.zoomed').forEach(s => {
-                            if(s !== this) s.classList.remove('zoomed');
-                        });
-                        this.classList.toggle('zoomed');
-                        e.stopPropagation();
-                    };
-
-                    wall.appendChild(shelf);
-                }
-            }
-            wallsContainer.appendChild(wall);
-        }
-    }
-
-    const inventoryElem = document.getElementById('inventory');
-    if (inventoryElem) {
-        inventoryElem.addEventListener('click', () => {
-            document.querySelectorAll('.shelf-cell.zoomed').forEach(s => s.classList.remove('zoomed'));
-        });
-    }
 
 </script>
 </body>

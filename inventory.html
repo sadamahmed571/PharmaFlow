@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PharmaFlow نظام ادارة الصيدليات - المخزون</title>
+    <link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/inventory.css">
+</head>
+
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="logo-container">
+            <img src="img/logo.jpg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <h1 class="header-title"> صيدلية الشفاء</h1>
+        </div>
+        <div class="header-actions">
+            <a href="customers.html" class="header-nav-btn" title="العملاء">
+                <i data-lucide="users"></i>
+            </a>
+            <div class="user-profile">
+                <span class="user-name">سامي</span>
+                <i data-lucide="user"></i>
+            </div>
+			<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="تغيير الثيم">
+                <i data-lucide="moon" id="themeIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <a href="index.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
+        <a href="inventory.html" class="tab active"  ><i data-lucide="layers"></i> المخزن</a>
+        <a href="customers.html" class="tab"  ><i data-lucide="users"></i> العملاء</a>
+        <a href="admin.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
+    </div>
+
+    <div id="inventory" class="view active" style="display: block;">
+        <!-- شريط التحكم العلوي (Global Control) -->
+        <div class="inventory-control-bar">
+            <div class="control-row-1">
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="inventorySearch" placeholder="البحث بالاسم، الباركود، المادة الفعالة..." onkeyup="filterInventory()">
+                </div>
+                <button class="action-btn-secondary" onclick="openAuthModal()"><i data-lucide="plus-circle"></i> إضافة أدوية</button>
+            </div>
+            <div class="control-row-2">
+                <div class="filter-actions">
+                    <button class="filter-btn active" onclick="applyFilter('all', this)">الكل</button>
+                    <button class="filter-btn expiry-btn" onclick="applyFilter('expiring', this)">المنتهية</button>
+                    <button class="filter-btn low-btn" onclick="applyFilter('low-stock', this)">النواقص</button>
+                </div>
+                
+                <div class="view-toggles">
+                    <button class="view-toggle-btn active" id="toggleTableBtn" onclick="toggleView('table')"><i data-lucide="list" class="view-icon"></i>قائمة</button>
+                    <button class="view-toggle-btn" id="toggle3DBtn" onclick="toggleView('3d')"><i data-lucide="box" class="view-icon"></i>جدران</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="inventory-content-wrapper">
+            <!-- جدول المخزون المكثف (The Data Core) -->
+            <div id="tableView" class="inventory-view-section active">
+                <div class="smart-table-container">
+                    <table class="smart-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('name', this)" class="sortable">الاسم التجاري <i data-lucide="arrow-up-down" class="sort-icon"></i></th>
+                                <th onclick="sortTable('qtyMajor', this)" class="sortable">الكمية المتوفرة <i data-lucide="arrow-up-down" class="sort-icon"></i></th>
+                                <th onclick="sortTable('price', this)" class="sortable">السعر <i data-lucide="arrow-up-down" class="sort-icon"></i></th>
+                                <th onclick="sortTable('shelfNum', this)" class="sortable">الرف <i data-lucide="arrow-up-down" class="sort-icon"></i></th>
+                                <th onclick="sortTable('storageNum', this)" class="sortable">رقم التخزين <i data-lucide="arrow-up-down" class="sort-icon"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- سيتم ملؤه بالجافاسكريبت -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- عرض الجدران 3D (الذي كان موجوداً) -->
+            <div id="threeDView" class="inventory-view-section" style="display:none;">
+                <div class="inventory-info">
+                    <i data-lucide="info" class="icon-small"></i> اسحب لليمين/اليسار لتصفح الجدران. اضغط على أي خلية لعرض الأدوية.
+                </div>
+                <div class="scene">
+                    <div class="walls-container" id="wallsContainer"></div>
+                </div>
+            </div>
+
+            <!-- لوحة التفاصيل الجانبية (Quick-Action Flyout) -->
+            <div id="quickFlyout" class="quick-flyout">
+                <div class="flyout-header">
+                    <h4 id="flyoutDrugName">تفاصيل الدواء</h4>
+                    <button class="close-flyout" onclick="closeFlyout()"><i data-lucide="x"></i></button>
+                </div>
+                <div class="flyout-content">
+                    <!-- القسم الأول: البيانات المشتركة والإجمالية -->
+                    <div class="flyout-section">
+                        <h5 class="section-title"><i data-lucide="package"  class="section-title-icon"></i> البيانات المشتركة والإجمالية</h5>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="tag"></i> الاسم التجاري</span>
+                                <span id="flyoutTradeName" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="flask-conical"></i> الاسم الطبي</span>
+                                <span id="flyoutActiveIngredient" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="archive"></i> رقم التخزين</span>
+                                <span id="flyoutStorageNum" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="boxes"></i> الكمية الإجمالية</span>
+                                <div class="quantity-wrapper">
+                                    <span id="flyoutQty" class="summary-value qty-number">-</span>
+                                    <span id="flyoutQtyStatus" class="qty-status">-</span>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="banknote"></i> القيمة النقدية</span>
+                                <span id="flyoutTotalValue" class="summary-value value-highlight">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- القسم الثاني: الدفعات المخزنة (Widgets) -->
+                    <div class="flyout-section">
+                        <h5 class="section-title"><i data-lucide="layers"   class="section-title-icon"></i> الدفعات المخزنة</h5>
+                        <div id="batchesWidgetsContainer" class="batches-widgets-container">
+                            <!-- سيتم ملؤه بالجافاسكريبت -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+    <!-- نافذة طلب كود الصلاحية (Auth Modal) -->
+    <div id="authModal" class="modal-overlay">
+        <div class="modal-content auth-modal">
+            <div class="modal-header">
+                <h3><i data-lucide="shield-check"></i> التحقق من الصلاحية</h3>
+                <button class="close-modal" onclick="closeAuthModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-icon-wrapper">
+                    <i data-lucide="lock" class="lock-icon"></i>
+                </div>
+                <p class="auth-text">لإضافة أدوية جديدة للمخزن، يرجى إدخال كود الصلاحية الخاص بك.</p>
+                <div class="auth-input-group">
+                    <input type="password" id="authCodeInput" placeholder="أدخل الكود هنا..." maxlength="6">
+                </div>
+                <div class="auth-actions">
+                    <button class="btn-primary" onclick="submitAuthCode()">تأكيد الكود</button>
+                    <button class="btn-text" onclick="requestAuthCode()">لا أملك كوداً؟ أطلب كود صلاحية</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="assets/lucide.min.js"></script>
+<script>
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    const themes = [
+        { id: 'default', name: 'الافتراضي (Dark Teal)', icon: 'moon' },
+        { id: 'light-pro', name: 'المشرق الرسمي (Academic)', icon: 'sun' },
+        { id: 'light-vibrant', name: 'الحيوي المشرق (Health)', icon: 'sparkles' },
+        { id: 'dark-obsidian', name: 'العميق المظلم (Obsidian)', icon: 'zap' }
+    ];
+    let currentThemeIndex = 0;
+
+    function toggleTheme() {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        const theme = themes[currentThemeIndex];
+        const body = document.body;
+        const icon = document.getElementById('themeIcon');
+        const btn = document.getElementById('themeToggle');
+
+        body.removeAttribute('data-theme');
+        if (theme.id !== 'default') {
+            body.setAttribute('data-theme', theme.id);
+        }
+
+        icon.setAttribute('data-lucide', theme.icon);
+        btn.title = `تبديل الثيم: ${theme.name}`;
+
+        if(typeof lucide !== 'undefined') lucide.createIcons();
+    }
+</script>
+<script src="js/inventory.js"></script>
+</body>
+</html>
