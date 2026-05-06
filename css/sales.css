@@ -1,7 +1,8 @@
 .customer-advanced-section {
-    margin: 15px 0;
-    padding: 15px;
-    border-right: 3px solid var(--border-dim);
+    margin-top: 30px  ;
+	margin-bottom: 20px  ;
+    padding-top: 8px;
+    border-top: 2px solid var(--border-dim);
 }
 .customer-row {
     display: flex;
@@ -368,7 +369,7 @@ top: 1px;
     justify-content: center;
     gap: 4px;
 }
-.qty-presets button .lucide { margin-left: 2px; width: 15px; height: 15px; }
+.qty-presets-icon { margin-left: 1px; width: 13px; height: 13px; }
 .qty-presets button.active {
     color: var(--white);
     font-weight: bold;
@@ -377,10 +378,11 @@ top: 1px;
 }
 .qty-input-group {
     display: flex;
+	 
     align-items: center;
     gap: 10px;
     margin : 0 auto;
-		width:50%;
+		 
 		padding-bottom: 25px;
 		padding-top: 10px;
 
@@ -401,15 +403,34 @@ top: 1px;
     line-height: 1;
     padding-bottom: 4px;
 }
-.qty-input-group input {
+.qty-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    overflow: hidden;
+}
+.qty-input-wrapper input {
     flex: 1;
     padding: 10px;
     text-align: center;
     font-weight: bold;
     color: var(--text-light);
-    background: var(--bg-card);
-    border: 1px solid var(--border-dim);
-    border-radius: 6px;
+    background: transparent;
+    border: none;
+    outline: none;
+    min-width: 0;
+}
+.qty-unit-label {
+    padding: 10px 15px;
+    background: var(--button);
+    color: var(--accent-yellow);
+    font-weight:500;
+    font-size: 0.85rem;
+    border-right: 1px solid var(--border-dim);
+    white-space: nowrap;
 }
 .price-row {
     display: flex;
@@ -480,7 +501,7 @@ top: 1px;
     background: var(--danger-hover);
 }
 .receipt {
-    padding: 13px 30px;
+    padding: 13px 10px;
     background: var(--bg-card);
     border: 1px solid var(--accent-blue);
     border-radius: 8px 8px 0 0 ;
@@ -488,9 +509,9 @@ top: 1px;
 .receipt-header {
     margin-bottom: 10px;
     padding-bottom: 7px;
-    border-radius: 4px;
+    
     width: 100%;
-    padding: 8px;
+    
     font-size: 0.75rem;
     color: var(--text-muted);
     background: var(--button);
@@ -501,22 +522,27 @@ top: 1px;
 .receipt-table {
     width: 100%;
     margin-bottom: 10px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding-bottom: 13px;
     color: var(--text-light);
     border-collapse: collapse;
 }
-.receipt-table th, .receipt-table td {
-    padding: 8px;
-    text-align: center;
-    font-family: monospace;
-    border-bottom: 1px solid var(--border-dim);
-}
+ 
 .receipt-table th {
     color: var(--white);
     font-family: 'Segoe UI', sans-serif;
     font-size: 0.7rem;
     font-weight: bold;
+	 padding-bottom: 10px;
+	 padding-top:20px;
+	  border-bottom: 2px solid var(--border-dim);
+}
+ .receipt-table td {
+    padding-top: 10px;
+	 padding-bottom: 3px;
+    text-align: center;
+    font-family: monospace;
+    border-bottom: 1px solid var(--border-dim);
 }
 .receipt-table-icon {
     color: var(--text-muted) !important; /* اللون البرايمري */
@@ -531,7 +557,7 @@ top: 1px;
     padding-top: 6px;
     padding-bottom: 6px;
     margin-bottom: 15px;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: bold;
     color: var(--accent-yellow);
     border-bottom: 2px solid var(--border-dim);
@@ -617,23 +643,23 @@ top: 1px;
     border-color: var(--accent-blue);
 }
 .settlement-section {
-    margin: 20px 0;
-    padding: 20px 15px;
-    background: none;
-
-    border-right: 3px solid var(--border-dim);
+    margin-top: 30px  ;
+	margin-bottom: 20px  ;
+    padding-top: 8px;
+    border-top: 2px solid var(--border-dim);
 }
 .daily-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    padding: 15px;
-    margin-top: 15px;
+    padding: 10px;
+    margin-top: 10px;
 }
 .daily-stats .stat-card {
     background: var(--bg-card);
-    padding:  25px;
+    padding:  15px;
 		height:75px;
-    border-radius: 15px;
+		width:100%;
+    border-radius: 8px;
     border: 1px dashed var(--border-dim);
     display: flex;
     align-items: center;
@@ -646,10 +672,10 @@ top: 1px;
 }
 .daily-stats .stat-card .lucide {
     color: var(--accent-blue);
-    min-width: 22px;
-    min-height: 22px;
+    min-width: 19px;
+    min-height: 19px;
     margin-left: 0;
-		margin-right:8px;
+		margin-right:6px;
 }
 .daily-stats .stat-label {
     display: block;
@@ -699,7 +725,14 @@ top: 1px;
 }
     .daily-stats {
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        gap: 10px;
+    }
+	.daily-stats .stat-card {
+        padding: 8px 6px;
+    }
+    .daily-stats .stat-card .lucide {
+        width: 16px;
+        height: 16px;
     }
     .sales-summary {
         grid-template-columns: 1fr;
@@ -716,16 +749,8 @@ top: 1px;
         width: 12px;
         height: 12px;
     }
-    .daily-stats .stat-card {
-        padding: 8px 6px;
-    }
-    .daily-stats .stat-card .lucide {
-        width: 16px;
-        height: 16px;
-    }
-    .daily-stats {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    
+     
     .sales-summary {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -861,4 +886,299 @@ width: 50px;
 height: 50px;
 margin-bottom: 15px;
 animation: rotateSparkle 2s infinite linear;
+}
+
+@media screen and (max-width: 767px) {
+    .customer-advanced-section input::placeholder {
+        font-size: 0.65rem !important;
+    }
+}
+
+/* ========== السجل والتقارير (Reports) ========== */
+.reports-title { 
+    margin-bottom: 10px;
+    margin-top: 10px;  	
+    color: var(--white);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.reports-subtitle {
+    margin: 20px 0 10px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.recent-item-value {
+    font-weight: bold;
+    color: var(--accent-yellow);
+}
+
+/* ========== سجل المبيعات (Recent) ========== */
+.recent-sales-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--border-dim);
+}
+
+.log-controls-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.log-search-container {
+    position: relative;
+}
+
+.log-search-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    width: 16px;
+    height: 16px;
+}
+
+.log-search-input {
+    width: 100%;
+    height: 100%;
+    padding: 10px 35px 10px 10px;
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    background: var(--bg-card);
+    color: var(--text-light);
+    outline: none;
+    font-size: 0.8rem;
+}
+
+.log-actions-container {
+    display: flex;
+    gap: 8px;
+}
+
+.log-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--button);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+    padding: 8px;
+}
+
+.log-action-btn:hover {
+    background: var(--dropdown-foucse);
+    color: var(--active);
+}
+
+.log-action-btn .lucide {
+    width: 18px;
+    height: 18px;
+}
+
+.sales-log-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 10px;
+}
+
+.log-entry {
+    display: flex;
+    gap: 15px;
+    cursor: pointer;
+}
+
+.log-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.log-expand-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    margin-right: auto;
+}
+
+.log-entry.expanded .log-expand-icon {
+    transform: rotate(180deg);
+}
+
+.log-details {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border-dim);
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.log-entry.expanded .log-details {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.log-detail-item {
+    margin-bottom: 5px;
+}
+
+.log-time-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+    flex-shrink: 0;
+}
+
+.log-time {
+    font-size: 0.8rem;
+     
+    color: var(--text-muted);
+    background: var(--bg-card);
+    padding: 4px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-dim);
+    margin-bottom: 5px;
+    z-index: 2;
+}
+
+.log-connector {
+    width: 2px;
+    flex-grow: 1;
+    background: var(--border-dim);
+    min-height: 20px;
+}
+
+.log-content-col {
+    flex-grow: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.log-content-col::before {
+    content: '';
+    position: absolute;
+    right: -6px; /* RTL arrow */
+    top: 12px;
+    width: 10px;
+    height: 10px;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border-dim);
+    border-right: 1px solid var(--border-dim);
+    transform: rotate(45deg);
+}
+
+.log-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.log-id {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--accent-blue);
+}
+
+.log-amount {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.log-amount.positive { color: var(--active); }
+.log-amount.pending { color: var(--danger-dim); }
+.log-amount.partial { color: var(--warning-dim); }
+
+.log-desc {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.log-customer {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--button);
+    padding: 4px 3px;
+    border-radius: 6px;
+    width: fit-content;
+}
+.log-customer i{
+     
+    font-size: 0.65rem;
+   
+}
+
+/* تجاوب للهواتف لسجل المبيعات */
+@media screen and (max-width: 767px) {
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    .stat-value {
+        font-size: 0.8rem;
+    }
+    
+    .log-content-col {
+        padding: 8px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .log-id, .log-amount {
+        font-size: 0.7rem !important;
+    }
+    
+    .log-desc {
+        font-size: 0.75rem !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .log-customer {
+        font-size: 0.7rem !important;
+        padding: 3px 3px !important;
+    }
+    
+    .log-time {
+        font-size: 0.65rem !important;
+        padding: 3px 6px !important;
+    }
+    
+    .log-entry {
+        gap: 8px !important;
+    }
+    
+    .log-search-input {
+        padding: 8px 30px 8px 8px !important;
+        font-size: 0.75rem !important;
+    }
+
+    .log-action-btn {
+        padding: 6px !important;
+    }
+    
+    .log-action-btn .lucide {
+        width: 16px !important;
+        height: 16px !important;
+    }
 }
