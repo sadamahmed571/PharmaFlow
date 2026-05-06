@@ -321,8 +321,24 @@ function initSales() {
                 customBtn.innerHTML = `<i data-lucide="pen-tool" class="icon-small"></i> مخصص`;
                 if(typeof lucide !== 'undefined') lucide.createIcons();
             }
+
+            const unitLabel = document.getElementById('qtyUnitLabel');
+            if (unitLabel) {
+                unitLabel.innerText = this.textContent.trim();
+            }
         });
     });
+
+    // تفعيل طي وتوسيع سجل المبيعات
+    const salesLogContainer = document.getElementById('salesLogContainer');
+    if (salesLogContainer) {
+        salesLogContainer.addEventListener('click', (e) => {
+            const logEntry = e.target.closest('.log-entry');
+            if (logEntry) {
+                logEntry.classList.toggle('expanded');
+            }
+        });
+    }
 }
 
 function enableCustomUnit() {
@@ -338,11 +354,15 @@ function enableCustomUnit() {
 function disableCustomUnit(input) {
     const btn = document.getElementById('customUnitBtn');
     if (!btn) return;
+    const unitLabel = document.getElementById('qtyUnitLabel');
     if(input.value.trim() !== '') {
         btn.innerHTML = `<i data-lucide="check-circle" class="icon-small"></i> ${input.value}`;
         btn.classList.add('active');
+        if (unitLabel) unitLabel.innerText = input.value.trim();
     } else {
         btn.innerHTML = `<i data-lucide="pen-tool" class="icon-small"></i> مخصص`;
+        // Revert to default if custom is empty but still selected
+        if (unitLabel && btn.classList.contains('active')) unitLabel.innerText = 'مخصص';
     }
     input.style.display = 'none';
     btn.style.display = 'flex';
