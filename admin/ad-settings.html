@@ -39,53 +39,342 @@
         <a href="ad-analytics.html" class="admin-tab "><i data-lucide="pie-chart" class="admin-tab-icon"></i> التحليلات</a>
         <a href="ad-suppliers.html" class="admin-tab "><i data-lucide="truck" class="admin-tab-icon"></i> الموردين</a>
         <a href="ad-inventory.html" class="admin-tab "><i data-lucide="package" class="admin-tab-icon"></i> المخزون</a>
-        <a href="ad-finance.html" class="admin-tab "><i data-lucide="coins" class="admin-tab-icon" ></i> المالية</a>
+       
         <a href="ad-settings.html" class="admin-tab active"><i data-lucide="sliders-horizontal" class="admin-tab-icon"></i> الإعدادات</a>
     </div>
 
 <div id="settings-admin" class="view active">
 
-        <h3 style="margin-bottom: 15px; color: var(--accent-blue);"><i data-lucide="shield-check"></i> إعدادات النظام</h3>
-
-        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim); margin-bottom: 20px;">
-            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">العلامة التجارية</h4>
-            <div class="form-group">
-                <label>اسم الصيدلية</label>
-                <input type="text" value="صيدلية يمان">
-            </div>
-            <div class="form-group">
-                <label>تحميل الشعار (PNG)</label>
-                <button style="width: 100%; padding: 10px; background: var(--button); border: 1px dashed var(--border-dim); color: var(--text-muted); border-radius: 8px;"><i data-lucide="upload"></i> اختر ملفاً</button>
+        
+        <!-- 1. بيانات الصيدلية -->
+        <div class="settings-card">
+            <h4 class="settings-card-title"><i data-lucide="store"></i> بيانات الصيدلية</h4>
+            <p class="settings-card-desc">البيانات الأساسية للتعريف بالمركز والروابط الاجتماعية.</p>
+            
+            <div class="settings-grid-2">
+                <div class="form-group">
+                    <label>اسم الصيدلية</label>
+                    <input type="text" value="صيدلية الشفاء">
+                </div>
+                <div class="form-group">
+                    <label>رقم الواتساب</label>
+                    <input type="tel" dir="ltr" placeholder="مثال: +9677xxxxxxxx">
+                </div>
+                <div class="form-group">
+                    <label>رقم الاتصال</label>
+                    <input type="tel" dir="ltr" placeholder="مثال: 01234567">
+                </div>
+                <div class="form-group">
+                    <label>العنوان</label>
+                    <input type="text" placeholder="المدينة، الشارع، المبنى">
+                </div>
+                <div class="form-group">
+                    <label>رابط موقع الويب الخاص بالعملاء</label>
+                    <input type="url" dir="ltr" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>رابط فيس بوك</label>
+                    <input type="url" dir="ltr" placeholder="https://facebook.com/...">
+                </div>
+                <div class="form-group settings-full-width">
+                    <label>الشعار (Logo)</label>
+                    <div class="upload-container">
+                        <button class="btn-upload"><i data-lucide="upload"></i> اختر ملفاً (للمعاينة والتحميل)</button>
+                        <div class="upload-preview">
+                            <span>معاينة</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim); margin-bottom: 20px;">
-            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">إدارة الموظفين</h4>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--button); padding: 10px; border-radius: 8px;">
-                    <span style="font-size: 0.8rem; color: var(--text-light);">حذفذف (مدير)</span>
-                    <i data-lucide="edit-2" style="width: 14px; color: var(--accent-blue);"></i>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--button); padding: 10px; border-radius: 8px;">
-                    <span style="font-size: 0.8rem; color: var(--text-light);">أحمد محمد (موظف)</span>
-                    <i data-lucide="edit-2" style="width: 14px; color: var(--accent-blue);"></i>
+        <!-- 2. ادارة الموظفين و الصلاحيات -->
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <h4 class="settings-card-title"><i data-lucide="users"></i> إدارة الموظفين والصلاحيات</h4>
+                <button class="btn-add" style="margin: 0; padding: 5px 10px; font-size: 0.8rem;" onclick="openModal('addStaffModal')"><i data-lucide="user-plus" style="width: 14px;"></i> إضافة موظف</button>
+            </div>
+            <p class="settings-card-desc">إدارة حسابات الموظفين وصلاحياتهم وبياناتهم المالية.</p>
+
+            <!-- قسم تطبيق الموظفين -->
+            <div class="settings-sub-section compact">
+                <h5 class="settings-sub-title"><i data-lucide="smartphone"></i> قسم تطبيق الموظفين (الصفحات المسموحة)</h5>
+                <div class="settings-check-group">
+                    <label class="settings-check-label">
+                        <input type="checkbox" checked> نقطة البيع (sales.html)
+                    </label>
+                    <label class="settings-check-label">
+                        <input type="checkbox" checked> المخزون (inventory.html)
+                    </label>
+                    <label class="settings-check-label">
+                        <input type="checkbox"> العملاء (customers.html)
+                    </label>
                 </div>
             </div>
-            <button class="btn-add" style="margin-top: 15px; margin-bottom: 0;"><i data-lucide="user-plus"></i> إضافة حساب موظف</button>
+
+            <!-- قسم قائمة الموظفين -->
+            <h5 class="settings-sub-title"><i data-lucide="list"></i> قائمة الموظفين</h5>
+            <div class="staff-list">
+                <div class="staff-item">
+                    <div class="staff-info">
+                        <span class="staff-name">أحمد محمد <span class="staff-role admin">مدير</span></span>
+                        <span class="staff-contact">ahmed@example.com | 0501234567</span>
+                    </div>
+                    <div class="staff-actions">
+                        <button class="btn-icon yellow" title="تجميد/إيقاف"><i data-lucide="pause-circle"></i></button>
+                        <button class="btn-icon blue" title="عرض النشاط"><i data-lucide="activity"></i></button>
+                        <button class="btn-icon red" title="حذف"><i data-lucide="trash-2"></i></button>
+                    </div>
+                </div>
+                
+                <div class="staff-item">
+                    <div class="staff-info">
+                        <span class="staff-name">سعيد علي <span class="staff-role user">موظف</span></span>
+                        <span class="staff-contact">saeed@example.com | 0509876543</span>
+                    </div>
+                    <div class="staff-actions">
+                        <button class="btn-icon yellow" title="تجميد/إيقاف"><i data-lucide="pause-circle"></i></button>
+                        <button class="btn-icon blue" title="عرض النشاط"><i data-lucide="activity"></i></button>
+                        <button class="btn-icon red" title="حذف"><i data-lucide="trash-2"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div style="background: var(--bg-card); padding: 15px; border-radius: 12px; border: 1px solid var(--border-dim);">
-            <h4 style="color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 10px;">إعدادات تقنية</h4>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">حالة الطابعة</span>
-                <span style="color: #4caf50; font-size: 0.7rem; font-weight: bold;">متصل <i data-lucide="check-circle" style="width:12px;"></i></span>
+        <!-- 3. الأمان والمزامنة وقاعدة البيانات -->
+        <div class="settings-card" style="margin-bottom: 0;">
+            <h4 class="settings-card-title"><i data-lucide="shield"></i> الأمان والمزامنة وقاعدة البيانات</h4>
+            <p class="settings-card-desc">إدارة النسخ الاحتياطي والروابط البرمجية للمشروع.</p>
+            
+            <div class="settings-grid-1">
+                <!-- النسخ الاحتياطي -->
+                <div class="settings-sub-section">
+                    <h5 class="settings-sub-title"><i data-lucide="database"></i> النسخ الاحتياطي التلقائي واليدوي</h5>
+                    
+                    <div class="settings-inline-group">
+                        <label class="settings-check-label light">
+                            <input type="checkbox" checked> تفعيل النسخ التلقائي
+                        </label>
+                        <div class="settings-inline-item">
+                            <span>الوقت:</span>
+                            <input type="time" value="02:00" class="settings-inline-input" dir="ltr">
+                        </div>
+                        <div class="settings-inline-item">
+                            <span>التنسيق:</span>
+                            <select class="settings-inline-input">
+                                <option>JSON</option>
+                                <option>Excel</option>
+                            </select>
+                        </div>
+                        <div class="settings-inline-item">
+                            <span>النوع:</span>
+                            <select class="settings-inline-input">
+                                <option>محلي وسحابي</option>
+                                <option>محلي فقط</option>
+                                <option>سحابي فقط</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="export-buttons">
+                        <button class="btn-export green"><i data-lucide="file-spreadsheet" style="width: 16px;"></i> تصدير Excel</button>
+                        <button class="btn-export blue"><i data-lucide="file-json" style="width: 16px;"></i> تصدير JSON</button>
+                        <button class="btn-export yellow"><i data-lucide="database" style="width: 16px;"></i> تصدير SQL</button>
+                        <button class="btn-export red"><i data-lucide="file-text" style="width: 16px;"></i> تصدير PDF</button>
+                    </div>
+                </div>
+
+                <!-- الطابعة -->
+                <div class="settings-sub-section">
+                    <h5 class="settings-sub-title"><i data-lucide="printer"></i> خيارات ربط الطابعة الحرارية</h5>
+                    <div class="settings-inline-group" style="align-items: flex-end;">
+                        <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                            <label>الطابعة الافتراضية</label>
+                            <select>
+                                <option>POS-80C</option>
+                                <option>XP-80 Printer</option>
+                                <option>Microsoft Print to PDF</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 150px; margin-bottom: 0;">
+                            <label>عرض الورق</label>
+                            <select>
+                                <option>80mm</option>
+                                <option>58mm</option>
+                            </select>
+                        </div>
+                        <button style="padding: 10px 15px; background: var(--button); border: 1px solid var(--border-dim); color: var(--text-light); border-radius: 8px; cursor: pointer;">اختبار الطباعة</button>
+                    </div>
+                </div>
+
+                <!-- الروابط -->
+                <div class="settings-sub-section">
+                    <h5 class="settings-sub-title"><i data-lucide="link"></i> روابط البرمجة</h5>
+                    <div class="settings-grid-2" style="gap: 10px;">
+                        <div class="form-group">
+                            <label>رابط الدومين</label>
+                            <input type="url" dir="ltr" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label>رابط GitHub</label>
+                            <input type="url" dir="ltr" placeholder="https://github.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>رابط قاعدة البيانات</label>
+                            <input type="url" dir="ltr" placeholder="https://supabase.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label>رابط الاستضافة</label>
+                            <input type="url" dir="ltr" placeholder="https://vercel.com/...">
+                        </div>
+                        <div class="form-group settings-full-width">
+                            <label><i data-lucide="key"></i> مفتاح API Gemini</label>
+                            <div class="api-key-container">
+                                <input type="password" id="geminiApiKey" dir="ltr" placeholder="AIzaSy..." value="AIzaSy-XXXXX-XXXXX">
+                                <button class="btn-api-test" onclick="testGeminiConnection()">
+                                    <i data-lucide="zap"></i> حفظ واختبار الاتصال
+                                </button>
+                            </div>
+                            
+                            <!-- شريط الكوتا -->
+                            <div class="quota-section">
+                                <div class="quota-labels">
+                                    <span>استهلاك الكوتا (المجانية)</span>
+                                    <span id="quotaPercentage">45%</span>
+                                </div>
+                                <div class="quota-bar-bg">
+                                    <div id="quotaBarFill" class="quota-bar-fill" style="width: 45%;"></div>
+                                </div>
+                                <div class="quota-footer">
+                                    <span>المتبقي: <strong id="quotaRemaining">550</strong> طلب تقريباً</span>
+                                    <span>الحد الأقصى: 1000 طلب/يوم</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">النسخ الاحتياطي السحابي</span>
-                <span style="color: var(--accent-blue); font-size: 0.7rem; font-weight: bold;">مفعل <i data-lucide="cloud-check" style="width:12px;"></i></span>
+        </div>
+
+    <!-- Modal: إضافة موظف -->
+    <div id="addStaffModal" class="settings-modal">
+        <div class="settings-modal-content">
+            <div class="settings-modal-header">
+                <h3 class="settings-modal-title"><i data-lucide="user-plus"></i> إضافة موظف جديد</h3>
+                <button onclick="closeModal('addStaffModal')" class="btn-close"><i data-lucide="x"></i></button>
+            </div>
+            <div class="settings-modal-body">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>اسم الموظف</label>
+                    <input type="text" placeholder="الاسم الكامل">
+                </div>
+                <div class="settings-modal-row">
+                    <div class="form-group">
+                        <label>PIN / كلمة المرور</label>
+                        <input type="password" dir="ltr" placeholder="••••">
+                    </div>
+                    <div class="form-group">
+                        <label>الصلاحية</label>
+                        <select>
+                            <option>موظف</option>
+                            <option>مدير</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="settings-modal-row">
+                    <div class="form-group">
+                        <label>الراتب الشهري</label>
+                        <input type="number" placeholder="المبلغ">
+                    </div>
+                    <div class="form-group">
+                        <label>الايميل</label>
+                        <input type="email" dir="ltr" placeholder="email@example.com">
+                    </div>
+                </div>
+                <div class="settings-modal-row">
+                    <div class="form-group">
+                        <label>رقم الهاتف</label>
+                        <input type="tel" dir="ltr" placeholder="050...">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم الواتساب</label>
+                        <input type="tel" dir="ltr" placeholder="050...">
+                    </div>
+                </div>
+            </div>
+            <div class="settings-modal-footer">
+                <button onclick="closeModal('addStaffModal')" class="btn-cancel">إلغاء</button>
+                <button onclick="closeModal('addStaffModal')" class="btn-save"><i data-lucide="save" style="width: 16px;"></i> حفظ</button>
             </div>
         </div>
     </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Gemini Connection Test
+        function testGeminiConnection() {
+            const btn = document.querySelector('.btn-api-test');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = '<i data-lucide="loader-2" class="spin"></i> جاري الاختبار...';
+            btn.disabled = true;
+            
+            // محاكاة اختبار الاتصال
+            setTimeout(() => {
+                const success = Math.random() > 0.2; // 80% نجاح
+                
+                if (success) {
+                    btn.innerHTML = '<i data-lucide="check-circle"></i> متصل بنجاح';
+                    btn.style.background = '#4caf50';
+                    
+                    // تحديث الكوتا بشكل وهمي عند النجاح
+                    const randomUsage = Math.floor(Math.random() * 80);
+                    updateQuotaUI(randomUsage);
+                } else {
+                    btn.innerHTML = '<i data-lucide="alert-circle"></i> فشل الاتصال';
+                    btn.style.background = '#f44336';
+                }
+                
+                if(typeof lucide !== 'undefined') lucide.createIcons();
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    if(typeof lucide !== 'undefined') lucide.createIcons();
+                }, 3000);
+            }, 2000);
+        }
+
+        function updateQuotaUI(percentage) {
+            const bar = document.getElementById('quotaBarFill');
+            const label = document.getElementById('quotaPercentage');
+            const remaining = document.getElementById('quotaRemaining');
+            
+            if(!bar || !label || !remaining) return;
+
+            bar.style.width = percentage + '%';
+            label.innerText = percentage + '%';
+            
+            const remainingRequests = Math.floor(1000 * (1 - percentage/100));
+            remaining.innerText = remainingRequests;
+            
+            // تغيير اللون حسب الاستهلاك
+            if (percentage > 80) {
+                bar.style.background = '#f44336';
+            } else if (percentage > 50) {
+                bar.style.background = 'var(--accent-yellow)';
+            } else {
+                bar.style.background = 'linear-gradient(90deg, var(--accent-blue), #4caf50)';
+            }
+        }
+    </script>
 
 </div>
 
