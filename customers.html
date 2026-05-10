@@ -14,8 +14,11 @@
     <div class="header">
         <div class="logo-container">
             <img src="img/logo.jpg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-            <h1 class="header-title"> صيدلية الشفاء</h1>
-        </div>
+                <div class="branding-text">
+                    <h1 class="header-title"> صيدلية الشفاء</h1>
+                    <a href="#" class="system-link">فارما فلو Pharma FLOWᴬᴵ</a>
+                </div>
+            </div>
         <div class="header-actions">
             <div class="user-profile">
                 <span class="user-name">سامي</span>
@@ -28,10 +31,10 @@
     </div>
 
     <div class="tabs">
-        <a href="index.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
+        <a href="sales.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
         <a href="inventory.html" class="tab"  ><i data-lucide="layers"></i> المخزن</a>
         <a href="customers.html" class="tab active"  ><i data-lucide="users"></i> العملاء</a>
-        <a href="admin.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
+        <a href="admin/ad-analytics.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
     </div>
 
     <div id="customers" class="view active">
@@ -46,11 +49,11 @@
                     <span class="metric-label">إجمالي الديون القائمة</span>
                 </div>
             </div>
-            <div class="metric-widget activity-widget">
-                <div class="metric-icon"><i data-lucide="activity"></i></div>
+            <div class="metric-widget customers-widget">
+                <div class="metric-icon"><i data-lucide="users"></i></div>
                 <div class="metric-content">
-                    <span class="metric-value" id="todayActivity">0</span>
-                    <span class="metric-label">نشاط العملاء (24س)</span>
+                    <span class="metric-value" id="totalCustomers">0</span>
+                    <span class="metric-label">عدد العملاء</span>
                 </div>
             </div>
             <div class="metric-widget collection-widget">
@@ -73,6 +76,66 @@
                     <i data-lucide="user-plus" class="btn-icon"></i> <span class="btn-text">إضافة عميل</span>
                 </button>
             </div>
+
+           <!-- نافذة إضافة عميل جديد - تم نقلها هنا لتظهر تحت شريط البحث -->
+<div id="addCustomerModal" class="add-customer-inline-panel">
+    <div class="modal-header">
+        <h3 class="modal-title">
+            <i data-lucide="user-plus"></i> إضافة عميل جديد
+        </h3>
+        <button class="close-modal" onclick="closeAddCustomerModal()">
+            <i data-lucide="x"></i>
+        </button>
+    </div>
+    
+    <div class="modal-body">
+        <div class="customer-row">
+            <div class="customer-name-col">
+                <div class="input-with-icon">
+                    <i data-lucide="user" class="input-icon"></i>
+                    <input type="text" id="newCustomerName" class="customer-input" placeholder="اسم العميل"
+                        oninput="handleNewCustomerSearch()" onfocus="handleNewCustomerSearch()">
+                </div>
+                <div id="newCustomerDropdown" class="dropdown-list"></div>
+            </div>
+            
+            <div class="customer-file-col">
+                <div class="input-with-icon">
+                    <i data-lucide="folder-open" class="input-icon"></i>
+                    <input type="text" id="newCustomerFile" class="customer-input customer-file-input"
+                        placeholder="رقم الملف" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="contact-row">
+            <div class="phone-wrapper">
+                <i data-lucide="phone" class="input-icon-phone"></i>
+                <input type="tel" id="newCustomerPhone" class="customer-input phone-input"
+                    placeholder="رقم الهاتف" oninput="syncNewCustomerPhone()">
+                <span class="phone-prefix">967+</span>
+            </div>
+            
+            <div class="phone-wrapper">
+                <i data-lucide="message-circle" class="input-icon-phone"></i>
+                <input type="tel" id="newCustomerWhatsapp" class="customer-input phone-input"
+                    placeholder="رقم الواتس">
+                <span class="phone-prefix">967+</span>
+            </div>
+        </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="newCustomerSamePhone" onchange="syncNewCustomerPhone()" checked>
+            <label for="newCustomerSamePhone" class="checkbox-label">نفس رقم الهاتف للواتساب</label>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeAddCustomerModal()">إلغاء</button>
+        <button class="btn-save" onclick="saveNewCustomer()">حفظ العميل</button>
+    </div>
+</div>
+
             <div class="control-row-2">
                 <div class="filter-pills">
                     <button class="filter-pill active" data-filter="all" onclick="filterByStatus('all', this)">
@@ -94,118 +157,93 @@
             </div>
         </div>
 
-        <!-- سجل العملاء الرئيسي -->
-        <div class="customers-table-container">
-            <table class="customers-table">
-                <thead>
-                    <tr>
-                      
-                        <th onclick="sortCustomers('name', this)" class="sortable">
-                            العميل <i data-lucide="arrow-up-down" class="sort-icon"></i>
-                        </th>
-                        <th onclick="sortCustomers('status', this)" class="sortable">
-                            الحالة المالية <i data-lucide="arrow-up-down" class="sort-icon"></i>
-                        </th>
-                        <th onclick="sortCustomers('type', this)" class="sortable">
-                            نوع التعامل <i data-lucide="arrow-up-down" class="sort-icon"></i>
-                        </th>
-						  <th class="serial-col">#</th>
-                    </tr>
-                </thead>
-                <tbody id="customersTableBody">
-                    <!-- سيتم ملؤه بالجافاسكريبت -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- نافذة تفاصيل العميل (Flyout) - مطابقة لنافذة المخزون -->
-        <div id="customerFlyout" class="quick-flyout">
-            <div class="flyout-header">
-                <h4 id="flyoutCustomerName">تفاصيل العميل</h4>
-                <button class="close-flyout" onclick="closeCustomerFlyout()"><i data-lucide="x"></i></button>
+        <!-- حاوية جديدة لربط الجدول والنافذة المنبثقة -->
+        <div class="table-flyout-wrapper" style="position: relative; display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+            <!-- سجل العملاء الرئيسي -->
+            <div class="customers-table-container">
+                <table class="customers-table">
+                    <thead>
+                        <tr>
+                          
+                            <th onclick="sortCustomers('name', this)" class="sortable">
+                                العميل <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                            </th>
+                            <th onclick="sortCustomers('totalPurchases', this)" class="sortable" title="المبلغ الإجمالي الذي قام العميل بشراء أدوية به طيلة فترة تعامله مع الصيدلية">
+                                المشتريات <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                            </th>
+                            <th onclick="sortCustomers('status', this)" class="sortable">
+                                الحالة المالية <i data-lucide="arrow-up-down" class="sort-icon"></i>
+                            </th>
+    						  <th class="serial-col">#</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                        <!-- سيتم ملؤه بالجافاسكريبت -->
+                    </tbody>
+                </table>
             </div>
-            <div class="flyout-content">
-                <!-- القسم الأول: البيانات المشتركة والمالية -->
-                <div class="flyout-section">
-                    <h5 class="section-title"><i data-lucide="user" class="section-title-icon"></i> البيانات المشتركة والمالية</h5>
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="user-circle"></i> اسم العميل</span>
-                            <span id="flyoutCustomerNameDetail" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="hash"></i> كود العميل</span>
-                            <span id="flyoutCustomerCode" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="phone"></i> رقم الهاتف</span>
-                            <span id="flyoutCustomerPhone" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="wallet"></i> إجمالي المسحوب</span>
-                            <span id="flyoutTotalCredit" class="summary-value value-highlight">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="check-circle"></i> المبالغ المدفوعة</span>
-                            <span id="flyoutTotalPaid" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label"><i data-lucide="alert-circle"></i> المتبقي</span>
-                            <span id="flyoutRemaining" class="summary-value">-</span>
-                        </div>
-                        <div class="summary-item full-width">
-                            <span class="summary-label"><i data-lucide="activity"></i> آخر نشاط</span>
-                            <div class="activity-wrapper">
-                                <span id="flyoutLastActivityDate" class="summary-value">-</span>
-                                <span id="flyoutLastActivityType" class="qty-status">-</span>
+    
+            <!-- نافذة تفاصيل العميل (Flyout) - مطابقة لنافذة المخزون -->
+            <div id="customerFlyout" class="quick-flyout">
+                <div class="flyout-header">
+                    <h4 id="flyoutCustomerName">تفاصيل العميل</h4>
+                    <button class="close-flyout" onclick="closeCustomerFlyout()"><i data-lucide="x"></i></button>
+                </div>
+                <div class="flyout-content">
+                    <!-- القسم الأول: البيانات المشتركة والمالية -->
+                    <div class="flyout-section">
+                        <h5 class="section-title"><i data-lucide="user" class="section-title-icon"></i> البيانات المشتركة والمالية</h5>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="user-circle"></i> اسم العميل</span>
+                                <span id="flyoutCustomerNameDetail" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="hash"></i> كود العميل</span>
+                                <span id="flyoutCustomerCode" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="phone"></i> رقم الهاتف</span>
+                                <span id="flyoutCustomerPhone" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="wallet"></i> إجمالي المسحوب</span>
+                                <span id="flyoutTotalCredit" class="summary-value value-highlight">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="check-circle"></i> المبالغ المدفوعة</span>
+                                <span id="flyoutTotalPaid" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label"><i data-lucide="alert-circle"></i> المتبقي</span>
+                                <span id="flyoutRemaining" class="summary-value">-</span>
+                            </div>
+                            <div class="summary-item full-width">
+                                <span class="summary-label"><i data-lucide="activity"></i> آخر نشاط</span>
+                                <div class="activity-wrapper">
+                                    <span id="flyoutLastActivityDate" class="summary-value">-</span>
+                                    <span id="flyoutLastActivityType" class="qty-status">-</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- القسم الثاني: الفواتير والإجراءات (Widgets) -->
-                <div class="flyout-section">
-                    <h5 class="section-title"><i data-lucide="file-text" class="section-title-icon"></i> الفواتير والإجراءات</h5>
-                    <div id="flyoutWidgetsContainer" class="batches-widgets-container">
-                        <!-- سيتم ملؤه بالجافاسكريبت -->
+    
+                    <!-- القسم الثاني: الفواتير والإجراءات (Widgets) -->
+                    <div class="flyout-section">
+                        <h5 class="section-title"><i data-lucide="file-text" class="section-title-icon"></i> السجل المالي</h5>
+                        <div id="flyoutWidgetsContainer" class="batches-widgets-container">
+                            <!-- سيتم ملؤه بالجافاسكريبت -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+
+
 <script src="assets/lucide.min.js"></script>
-<script>
-    if(typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    const themes = [
-        { id: 'default', name: 'الافتراضي (Dark Teal)', icon: 'moon' },
-        { id: 'light-pro', name: 'المشرق الرسمي (Academic)', icon: 'sun' },
-        { id: 'light-vibrant', name: 'الحيوي المشرق (Health)', icon: 'sparkles' },
-        { id: 'dark-obsidian', name: 'العميق المظلم (Obsidian)', icon: 'zap' }
-    ];
-    let currentThemeIndex = 0;
-
-    function toggleTheme() {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        const theme = themes[currentThemeIndex];
-        const body = document.body;
-        const icon = document.getElementById('themeIcon');
-        const btn = document.getElementById('themeToggle');
-
-        body.removeAttribute('data-theme');
-        if (theme.id !== 'default') {
-            body.setAttribute('data-theme', theme.id);
-        }
-
-        icon.setAttribute('data-lucide', theme.icon);
-        btn.title = `تبديل الثيم: ${theme.name}`;
-
-        if(typeof lucide !== 'undefined') lucide.createIcons();
-    }
-</script>
+<script src="js/main.js"></script>
 <script src="js/customers.js"></script>
 </body>
 </html>

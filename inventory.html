@@ -14,12 +14,13 @@
     <div class="header">
         <div class="logo-container">
             <img src="img/logo.jpg" alt="Logo" class="logo-img" onerror="this.style.display='none'">
-            <h1 class="header-title"> صيدلية الشفاء</h1>
-        </div>
+                <div class="branding-text">
+                    <h1 class="header-title"> صيدلية الشفاء</h1>
+                    <a href="#" class="system-link">فارما فلو Pharma FLOWᴬᴵ</a>
+                </div>
+            </div>
         <div class="header-actions">
-            <a href="customers.html" class="header-nav-btn" title="العملاء">
-                <i data-lucide="users"></i>
-            </a>
+
             <div class="user-profile">
                 <span class="user-name">سامي</span>
                 <i data-lucide="user"></i>
@@ -31,10 +32,10 @@
     </div>
 
     <div class="tabs">
-        <a href="index.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
+        <a href="sales.html" class="tab "  ><i data-lucide="shopping-cart"></i> المبيعات</a>
         <a href="inventory.html" class="tab active"  ><i data-lucide="layers"></i> المخزن</a>
         <a href="customers.html" class="tab"  ><i data-lucide="users"></i> العملاء</a>
-        <a href="admin.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
+          <a href="admin/ad-analytics.html" class="tab"  ><i data-lucide="shield-check"></i> الإدارة</a>
     </div>
 
     <div id="inventory" class="view active" style="display: block;">
@@ -166,37 +167,7 @@
     </div>
 
 <script src="assets/lucide.min.js"></script>
-<script>
-    if(typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    const themes = [
-        { id: 'default', name: 'الافتراضي (Dark Teal)', icon: 'moon' },
-        { id: 'light-pro', name: 'المشرق الرسمي (Academic)', icon: 'sun' },
-        { id: 'light-vibrant', name: 'الحيوي المشرق (Health)', icon: 'sparkles' },
-        { id: 'dark-obsidian', name: 'العميق المظلم (Obsidian)', icon: 'zap' }
-    ];
-    let currentThemeIndex = 0;
-
-    function toggleTheme() {
-        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-        const theme = themes[currentThemeIndex];
-        const body = document.body;
-        const icon = document.getElementById('themeIcon');
-        const btn = document.getElementById('themeToggle');
-
-        body.removeAttribute('data-theme');
-        if (theme.id !== 'default') {
-            body.setAttribute('data-theme', theme.id);
-        }
-
-        icon.setAttribute('data-lucide', theme.icon);
-        btn.title = `تبديل الثيم: ${theme.name}`;
-
-        if(typeof lucide !== 'undefined') lucide.createIcons();
-    }
-</script>
+<script src="js/main.js"></script>
 <script src="js/inventory.js"></script>
 </body>
 </html>
