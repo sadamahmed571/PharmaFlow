@@ -1,0 +1,46 @@
+.chart-mockup {
+    width: 100%;
+    height: 150px;
+    background: var(--button);
+    border: 1px dashed var(--border-dim);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+	flex-direction:column ;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-note {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--button);
+    padding: 4px 3px;
+    border-radius: 6px;
+    width: fit-content;
+	margin:10px;
+}
+
+.chart-note i {
+
+    font-size: 0.65rem;
+
+}
+
+
+
+
+@media screen and (max-width: 767px) {
+ 
+
+    .chart-note {
+        font-size: 0.8rem !important;
+        padding: 3px 3px !important;
+    }
+	
+}	

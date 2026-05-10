@@ -1,0 +1,214 @@
+ 
+/* ========== شريط التبويبات (admin-tabs) ========== */
+.admin-tabs {
+    display: flex;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border-dim);
+    border-top: 3px solid var(--border-dim);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.admin-tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 0.77rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+
+.admin-tab-icon {
+    margin-left: 0;
+	 height: 13px;
+	 width: 13px;
+}
+
+.admin-tab.active {
+    color: var(--active);
+    background: var(--active-dim);
+    border-bottom-color: var(--active);
+}
+
+
+
+
+
+/* ========== وضع سطح المكتب (Desktop Query) 768px ========== */
+@media screen and (min-width: 768px) {
+    
+    .header {
+        grid-area: header;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .admin-tabs {
+        grid-area: tabs;
+        border-bottom: none;
+        border-left: 2px solid var(--border-dim);
+        border-top: none;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: relative;
+        /* remove sticky */
+    }
+
+    .admin-tab {
+        justify-content: flex-start;
+        padding: 20px 15px;
+        border-bottom: none;
+        border-right: 3px solid transparent;
+        font-size: 1.1rem;
+        flex: none;
+    }
+	.admin-tab-icon {
+    margin-left: 10px;
+	 height: 20px;
+	 width: 20px;
+}
+
+    .admin-tab.active {
+        border-bottom-color: transparent;
+        border-right-color: var(--active);
+        background: var(--active-dim);
+    }
+ 
+}
+
+
+
+/* ========== لوحة تحكم الإدارة (Admin Dashboard) ========== */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.stat-card .value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent-yellow);
+}
+
+.admin-table-container {
+    overflow-x: auto;
+    margin-top: 15px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 10px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-dim);
+}
+
+.admin-table th {
+    background: var(--button);
+    color: var(--text-muted);
+}
+
+.hd-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 5px;
+    margin-top: 15px;
+}
+
+.hd-cell {
+    background: var(--cell-bg);
+    padding: 5px;
+    font-size: 0.6rem;
+    border-radius: 3px;
+    text-align: center;
+    color: var(--text-light);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    color: var(--white);
+    outline: none;
+}
+
+/* ========== تنسيقات تجاوبية لشاشات الهواتف (Mobile Responsive) ========== */
+@media screen and (max-width: 767px) {
+    /* تصغير حاويات الإحصائيات */
+    .admin-stats-grid {
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .stat-card {
+        padding: 10px;
+        border-radius: 8px;
+    }
+    
+    .stat-card h3 {
+        font-size: 0.7rem;
+        margin-bottom: 3px;
+    }
+    
+    .stat-card .value {
+        font-size: 1rem;
+    }
+    
+    /* تصغير تفاصيل الجداول (مثل الفواتير الصادرة) */
+    .admin-table {
+        font-size: 0.7rem;
+        white-space: nowrap; /* لمنع تكسر النصوص في الجوال */
+    }
+    
+    .admin-table th,
+    .admin-table td {
+        padding: 6px 8px;
+    }
+}
