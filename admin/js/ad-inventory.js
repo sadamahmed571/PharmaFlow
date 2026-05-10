@@ -1,24 +1,36 @@
 const randomDrugsList = ['Amoxil', 'Panadol', 'Voltaren', 'Nexium', 'Lipitor', 'Zyrtec', 'Aspirin', 'Metformin', 'Concor', 'Lasix'];
 const activeIngredients = ['Amoxicillin', 'Paracetamol', 'Diclofenac', 'Esomeprazole', 'Atorvastatin', 'Cetirizine', 'Acetylsalicylic Acid', 'Metformin HCl', 'Bisoprolol', 'Furosemide'];
+const drugTypes = ['بواكت', 'علب', 'شرائط', 'حقن'];
 
 window.onload = () => {
     initInventory();
     populateSmartTable();
 };
 
-function initInventory() {
+function initInventory(numWalls = 3, numRows = 15, numCols = 20) {
     const wallsContainer = document.getElementById('wallsContainer');
     if (wallsContainer) {
         wallsContainer.innerHTML = '';
         
         let shelfCounter = 1;
-        for(let w=1; w<=3; w++) {
+        for(let w=1; w<=numWalls; w++) {
+            let wallWrapper = document.createElement('div');
+            wallWrapper.className = 'wall-wrapper';
+            
+            let wallTitle = document.createElement('h4');
+            wallTitle.className = 'wall-title';
+            wallTitle.innerText = `الجدار ${w}`;
+            wallWrapper.appendChild(wallTitle);
+
             let wall = document.createElement('div');
             wall.className = 'wall';
             wall.id = `wall-${w}`;
+            
+            wall.style.gridTemplateColumns = `repeat(${numCols}, 1fr)`;
+            wall.style.gridTemplateRows = `repeat(${numRows}, 1fr)`;
 
-            for(let r=1; r<=15; r++) {
-                for(let c=1; c<=20; c++) {
+            for(let r=1; r<=numRows; r++) {
+                for(let c=1; c<=numCols; c++) {
                     let shelf = document.createElement('div');
                     shelf.className = 'shelf-cell';
                     shelf.id = `cell-w${w}-r${r}-c${c}`;
@@ -68,7 +80,8 @@ function initInventory() {
                     wall.appendChild(shelf);
                 }
             }
-            wallsContainer.appendChild(wall);
+            wallWrapper.appendChild(wall);
+            wallsContainer.appendChild(wallWrapper);
         }
     }
 
@@ -82,6 +95,29 @@ function initInventory() {
     }
 }
 
+function applyWallsConfig() {
+    const w = parseInt(document.getElementById('inpWallsCount').value) || 3;
+    const r = parseInt(document.getElementById('inpRowsCount').value) || 15;
+    const c = parseInt(document.getElementById('inpColsCount').value) || 20;
+    
+    initInventory(w, r, c);
+    
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    
+    // Optional: visual feedback
+    const btn = document.querySelector('.walls-config-container .action-btn-primary');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i data-lucide="check-circle"></i> تم التطبيق';
+    btn.style.background = 'var(--active)';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    
+    setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 2000);
+}
+
 // ==========================================
 // Smart Table Logic
 // ==========================================
@@ -90,11 +126,13 @@ const dummyInventoryData = [];
 for (let i = 0; i < 50; i++) {
     const isLow = Math.random() > 0.9;
     const isExpiring = Math.random() > 0.85;
+    const isHidden = Math.random() > 0.95;
     const drugIdx = Math.floor(Math.random() * randomDrugsList.length);
     
     let statusClass = '';
     if (isLow) statusClass = 'row-low-stock';
     else if (isExpiring) statusClass = 'row-expiring';
+    else if (isHidden) statusClass = 'row-hidden';
 
     const wall = Math.floor(Math.random() * 3) + 1;
     const row = Math.floor(Math.random() * 15) + 1;
@@ -112,6 +150,7 @@ for (let i = 0; i < 50; i++) {
         expiry: isExpiring ? '2026-06-15' : '2028-11-20',
         price: (Math.random() * 50 + 5).toFixed(2),
         shelfNum: Math.floor(Math.random() * 900) + 1,
+        type: drugTypes[Math.floor(Math.random() * drugTypes.length)],
         statusClass: statusClass
     });
 }
@@ -219,6 +258,7 @@ function applyFilter(type, btn) {
         if (type === 'all') row.style.display = '';
         else if (type === 'expiring') row.style.display = row.classList.contains('row-expiring') ? '' : 'none';
         else if (type === 'low-stock') row.style.display = row.classList.contains('row-low-stock') ? '' : 'none';
+        else if (type === 'hidden') row.style.display = row.classList.contains('row-hidden') ? '' : 'none';
         else row.style.display = '';
     });
 }
@@ -229,12 +269,16 @@ function toggleView(viewType) {
     document.getElementById('tableView').style.display = 'none';
     document.getElementById('threeDView').style.display = 'none';
 
+    const filterActions = document.querySelector('.filter-actions');
+
     if (viewType === 'table') {
         document.getElementById('toggleTableBtn').classList.add('active');
         document.getElementById('tableView').style.display = 'block';
+        if(filterActions) filterActions.style.display = 'flex';
     } else {
         document.getElementById('toggle3DBtn').classList.add('active');
         document.getElementById('threeDView').style.display = 'block';
+        if(filterActions) filterActions.style.display = 'none';
     }
 }
 
@@ -303,6 +347,7 @@ function openFlyout(item) {
     document.getElementById('flyoutTradeName').innerText = item.name;
     document.getElementById('flyoutActiveIngredient').innerText = item.activeIngredient;
     document.getElementById('flyoutStorageNum').innerText = item.storageNum;
+    if(document.getElementById('flyoutDrugType')) document.getElementById('flyoutDrugType').innerText = item.type;
     
     // الكمية الإجمالية مع الحالة
     const qtyStatus = getQtyStatus(item.qtyMajor);
@@ -450,3 +495,131 @@ function submitAuthCode() {
 function requestAuthCode() {
     alert('تم إرسال طلب كود صلاحية إلى المدير. سيتم تزويدك بالكود فور الموافقة.');
 }
+
+function switchPurchaseMode(mode) {
+    document.querySelectorAll('.mode-radio').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.purchase-mode-container').forEach(el => el.style.display = 'none');
+    
+    if(mode === 'single') {
+        document.querySelector('.mode-radio:nth-child(1)').classList.add('active');
+        document.getElementById('singleItemMode').style.display = 'block';
+    } else {
+        document.querySelector('.mode-radio:nth-child(2)').classList.add('active');
+        document.getElementById('groupItemMode').style.display = 'block';
+    }
+}
+
+// ==========================================
+// Purchase Form Logic
+// ==========================================
+
+function openManualAddModal() {
+    const modal = document.getElementById('manualAddModal');
+    const container = document.getElementById('manualAddFormContainer');
+    const template = document.getElementById('purchaseFormTemplate');
+    
+    // Inject template
+    container.innerHTML = '';
+    container.appendChild(template.content.cloneNode(true));
+    
+    // Set auto date
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = container.querySelector('#inpStorageDate');
+    if(dateInput) dateInput.value = today;
+    
+    // Auto generate storage num
+    const storageInput = container.querySelector('#inpStorageNum');
+    if(storageInput) storageInput.value = 'STO-' + Math.floor(Math.random() * 9000 + 1000);
+    
+    // Create icons for newly injected elements
+    if(typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+    
+    modal.classList.add('open');
+}
+
+function closeManualAddModal() {
+    document.getElementById('manualAddModal').classList.remove('open');
+}
+
+function toggleItemStatus(radio) {
+    const wrapper = radio.closest('.purchase-form-wrapper');
+    const searchWrapper = wrapper.querySelector('.search-existing-wrapper');
+    
+    if (radio.value === 'existing') {
+        searchWrapper.style.display = 'block';
+    } else {
+        searchWrapper.style.display = 'none';
+        // Clear inputs for new item
+        wrapper.querySelector('#inpTradeName').value = '';
+        wrapper.querySelector('#inpMedicalName').value = '';
+        wrapper.querySelector('#inpCompany').value = '';
+    }
+}
+
+function toggleCustomType(radio) {
+    const wrapper = radio.closest('.form-group');
+    const customInput = wrapper.querySelector('#inpCustomType');
+    if (radio.checked) {
+        customInput.style.display = 'block';
+        customInput.focus();
+    } else {
+        customInput.style.display = 'none';
+    }
+}
+
+function calculateUnitPrice() {
+    // Look for inputs in the currently visible form
+    // Since this could be in a modal or group area, we find the active one
+    const activeForm = document.querySelector('.modal-overlay.open .purchase-form-wrapper') || document;
+    const qty = parseFloat(activeForm.querySelector('#inpQuantity').value) || 0;
+    const total = parseFloat(activeForm.querySelector('#inpTotalCost').value) || 0;
+    const unitCost = activeForm.querySelector('#inpUnitCost');
+    
+    if (qty > 0 && total > 0 && unitCost) {
+        unitCost.value = (total / qty).toFixed(2);
+    } else if (unitCost) {
+        unitCost.value = '';
+    }
+}
+
+function searchExistingDrug(input) {
+    const dropdown = input.nextElementSibling;
+    const val = input.value.toLowerCase();
+    dropdown.innerHTML = '';
+    
+    if (!val) {
+        dropdown.style.display = 'none';
+        return;
+    }
+    
+    const matches = dummyInventoryData.filter(d => d.name.toLowerCase().includes(val) || d.activeIngredient.toLowerCase().includes(val));
+    
+    if (matches.length > 0) {
+        matches.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<strong>${item.name}</strong> - ${item.activeIngredient}`;
+            li.onclick = () => {
+                input.value = item.name;
+                dropdown.style.display = 'none';
+                
+                // Autofill existing data
+                const wrapper = input.closest('.purchase-form-wrapper');
+                wrapper.querySelector('#inpTradeName').value = item.name;
+                wrapper.querySelector('#inpMedicalName').value = item.activeIngredient;
+                wrapper.querySelector('#inpCompany').value = item.manufacturer || 'شركة فارما ميد';
+            };
+            dropdown.appendChild(li);
+        });
+        dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
+    }
+}
+
+function submitManualAdd() {
+    alert("تم إضافة الدواء بنجاح للمخزون!");
+    closeManualAddModal();
+}
+
