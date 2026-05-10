@@ -8,6 +8,7 @@ const customersData = [
         status: 'debt',
         type: 'credit',
         trustRating: 4,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 2500,
         totalPaid: 1000,
         remaining: 1500,
@@ -23,6 +24,7 @@ const customersData = [
         status: 'clear',
         type: 'cash',
         trustRating: 5,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 0,
         totalPaid: 0,
         remaining: 0,
@@ -38,6 +40,7 @@ const customersData = [
         status: 'debt',
         type: 'credit',
         trustRating: 3,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 5000,
         totalPaid: 3500,
         remaining: 1500,
@@ -53,6 +56,7 @@ const customersData = [
         status: 'vip',
         type: 'credit',
         trustRating: 5,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 8000,
         totalPaid: 8000,
         remaining: 0,
@@ -68,6 +72,7 @@ const customersData = [
         status: 'debt',
         type: 'cash',
         trustRating: 2,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 1200,
         totalPaid: 500,
         remaining: 700,
@@ -83,6 +88,7 @@ const customersData = [
         status: 'clear',
         type: 'cash',
         trustRating: 4,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 0,
         totalPaid: 0,
         remaining: 0,
@@ -98,6 +104,7 @@ const customersData = [
         status: 'vip',
         type: 'credit',
         trustRating: 5,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 12000,
         totalPaid: 10000,
         remaining: 2000,
@@ -113,6 +120,7 @@ const customersData = [
         status: 'clear',
         type: 'cash',
         trustRating: 4,
+        totalPurchases: Math.floor(Math.random() * 5000 + 1000),
         totalCredit: 800,
         totalPaid: 800,
         remaining: 0,
@@ -153,15 +161,14 @@ let selectedCustomer = null;
 // ========== تحديث المؤشرات السريعة ==========
 function updateMetrics() {
     const totalDebt = customersData.reduce((sum, c) => sum + c.remaining, 0);
-    const today = new Date().toISOString().split('T')[0];
-    const todayActivity = customersData.filter(c => c.lastActivity === today).length;
+    const totalCustomersCount = customersData.length;
     
     const totalCredit = customersData.reduce((sum, c) => sum + c.totalCredit, 0);
     const totalPaid = customersData.reduce((sum, c) => sum + c.totalPaid, 0);
     const collectionRate = totalCredit > 0 ? Math.round((totalPaid / totalCredit) * 100) : 0;
 
     document.getElementById('totalDebt').textContent = `$${totalDebt.toLocaleString()}`;
-    document.getElementById('todayActivity').textContent = todayActivity;
+    document.getElementById('totalCustomers').textContent = totalCustomersCount;
     document.getElementById('collectionRate').textContent = `${collectionRate}%`;
 }
 
@@ -204,17 +211,12 @@ function renderCustomersTable() {
         const initials = customer.name.split(' ').map(n => n[0]).join('').substring(0, 2);
         const statusClass = customer.status;
         const statusText = getStatusText(customer.status);
-        const typeClass = customer.type;
-        const typeText = customer.type === 'cash' ? 'نقدي' : 'آجل';
-        const typeIcon = customer.type === 'cash' ? 'banknote' : 'clock';
         const serialNumber = index + 1;
         
         return `
             <tr onclick="openCustomerFlyout('${customer.id}')">
-                
                 <td>
                     <div class="customer-cell">
-                        
                         <div class="customer-info-sm">
                             <span class="customer-name">${customer.name}</span>
                             <span class="customer-join-date">منذ ${formatDate(customer.joinDate)}</span>
@@ -222,20 +224,19 @@ function renderCustomersTable() {
                     </div>
                 </td>
                 <td>
+                    <div class="transaction-type" style="justify-content: flex-start;">
+                        <span style="font-weight: bold; font-family: monospace; color: var(--text-light);">$${(customer.totalPurchases || 0).toLocaleString()}</span>
+                    </div>
+                </td>
+                <td>
                     <div class="financial-status">
                         <span class="status-badge ${statusClass}">${statusText}</span>
                         <div class="financial-amounts">
                             ${customer.remaining > 0 ? 
-                                `<span class="amount-remaining">متبقي: $${customer.remaining}</span>` :
+                                `<span class="amount-remaining">متبقي: $ ${customer.remaining}</span>` :
                                 `<span class="amount-paid">مسدد</span>`
                             }
                         </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="transaction-type ${typeClass}">
-                        <i data-lucide="${typeIcon}"></i>
-                        <span>${typeText}</span>
                     </div>
                 </td>
 				<td class="serial-cell">
@@ -353,44 +354,51 @@ function openCustomerFlyout(customerId) {
     
     let widgetsHTML = '';
     
-    // ويدجت الفواتير
+    // السجل المالي (الفواتير)
     if (customerInvoices.length === 0) {
         widgetsHTML += `
-            <div class="batch-widget">
+            <div class="batch-widget" style="margin-bottom: 15px;">
                 <div class="batch-widget-header">
                     <span class="batch-name"><i data-lucide="file-text"></i> لا توجد فواتير</span>
                 </div>
             </div>
         `;
     } else {
+        widgetsHTML += `
+            <div class="customers-table-container" style="margin-bottom: 15px; border: 1px solid var(--border-dim); border-radius: 8px;">
+                <table class="customers-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الفاتورة</th>
+                            <th>التاريخ</th>
+                            <th>الاستحقاق</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
         customerInvoices.forEach(inv => {
+            const statusClass = inv.status === 'paid' ? 'clear' : 'debt';
+            const statusText = inv.status === 'paid' ? 'مسددة' : 'معلقة';
+            
             widgetsHTML += `
-                <div class="batch-widget">
-                    <div class="batch-widget-header">
-                        <span class="batch-name"><i data-lucide="file-text"></i> فاتورة #${inv.id}</span>
-                        <span class="batch-status ${inv.status}">${inv.status === 'paid' ? 'مسددة' : 'معلقة'}</span>
-                    </div>
-                    <div class="batch-widget-grid">
-                        <div class="batch-widget-item">
-                            <span class="widget-label"><i data-lucide="calendar" class="widget-label-icon"></i> التاريخ</span>
-                            <span class="widget-value">${formatDateShort(inv.date)}</span>
-                        </div>
-                        <div class="batch-widget-item">
-                            <span class="widget-label"><i data-lucide="clock" class="widget-label-icon"></i> الاستحقاق</span>
-                            <span class="widget-value">${formatDateShort(inv.dueDate)}</span>
-                        </div>
-                        <div class="batch-widget-item">
-                            <span class="widget-label"><i data-lucide="dollar-sign" class="widget-label-icon"></i> المبلغ</span>
-                            <span class="widget-value" style="color: var(--accent-yellow); font-weight: bold;">$${inv.amount.toLocaleString()}</span>
-                        </div>
-                        <div class="batch-widget-item">
-                            <span class="widget-label"><i data-lucide="info" class="widget-label-icon"></i> الحالة</span>
-                            <span class="widget-value">${inv.status === 'paid' ? 'مسددة' : 'معلقة'}</span>
-                        </div>
-                    </div>
-                </div>
+                <tr>
+                    <td style="font-family: monospace; font-weight: bold;">#${inv.id}</td>
+                    <td>${formatDateShort(inv.date)}</td>
+                    <td>${formatDateShort(inv.dueDate)}</td>
+                    <td style="color: var(--accent-yellow); font-weight: bold;">$${inv.amount.toLocaleString()}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                </tr>
             `;
         });
+        
+        widgetsHTML += `
+                    </tbody>
+                </table>
+            </div>
+        `;
     }
     
     // ويدجت الإجراءات
@@ -409,8 +417,17 @@ function openCustomerFlyout(customerId) {
                 <button class="action-widget-btn" onclick="callCustomer()">
                     <i data-lucide="phone"></i> اتصال
                 </button>
+                <button class="action-widget-btn" onclick="whatsappCustomer()">
+                    <i data-lucide="message-circle"></i> واتس آب
+                </button>
                 <button class="action-widget-btn" onclick="exportStatement()">
                     <i data-lucide="download"></i> تصدير كشف
+                </button>
+                <button class="action-widget-btn" onclick="editCustomer()">
+                    <i data-lucide="edit"></i> تعديل
+                </button>
+                <button class="action-widget-btn" style="color: #ff4d4f; border-color: rgba(255, 77, 79, 0.3);" onclick="deleteCustomer()">
+                    <i data-lucide="trash-2"></i> حذف
                 </button>
             </div>
         </div>
@@ -464,15 +481,156 @@ function callCustomer() {
     }
 }
 
+function whatsappCustomer() {
+    if (selectedCustomer && selectedCustomer.phone) {
+        // افتراض أن الرقم يحتاج لتهيئة (مثلاً إضافة رمز الدولة إذا لم يكن موجوداً)
+        // هذا مجرد مثال وممكن تعديله حسب الحاجة
+        const phone = selectedCustomer.phone.replace(/^0/, '+964');
+        window.open(`https://wa.me/${phone}`, '_blank');
+    }
+}
+
 function exportStatement() {
     if (selectedCustomer) {
         alert(`تصدير كشف حساب للعميل ${selectedCustomer.name}`);
     }
 }
 
-function openAddCustomerModal() {
-    alert('فتح نموذج إضافة عميل جديد');
+function editCustomer() {
+    if (selectedCustomer) {
+        alert(`فتح نافذة تعديل بيانات العميل: ${selectedCustomer.name}`);
+    }
 }
+
+function deleteCustomer() {
+    if (selectedCustomer) {
+        const confirmDelete = confirm(`هل أنت متأكد من رغبتك في حذف العميل (${selectedCustomer.name})؟\nهذا الإجراء لا يمكن التراجع عنه.`);
+        if (confirmDelete) {
+            alert(`تم حذف العميل: ${selectedCustomer.name} بنجاح.`);
+            closeCustomerFlyout();
+            // هنا يتم إضافة كود الحذف الفعلي من المصفوفة/قاعدة البيانات وإعادة تحديث الجدول
+        }
+    }
+}
+
+function openAddCustomerModal() {
+    const modal = document.getElementById('addCustomerModal');
+    if (modal) {
+        modal.style.display = 'block';
+        // Auto-generate next ID based on existing max ID in customersData
+        let maxIdNum = 0;
+        customersData.forEach(c => {
+            let num = parseInt(c.id.replace('C', ''));
+            if (!isNaN(num) && num > maxIdNum) {
+                maxIdNum = num;
+            }
+        });
+        const nextId = 'C' + (maxIdNum + 1).toString().padStart(3, '0');
+        document.getElementById('newCustomerFile').value = nextId;
+    }
+}
+
+function closeAddCustomerModal() {
+    const modal = document.getElementById('addCustomerModal');
+    if (modal) {
+        modal.style.display = 'none';
+        // Reset fields
+        document.getElementById('newCustomerName').value = '';
+        document.getElementById('newCustomerPhone').value = '';
+        document.getElementById('newCustomerWhatsapp').value = '';
+        document.getElementById('newCustomerDropdown').style.display = 'none';
+        document.getElementById('newCustomerSamePhone').checked = true;
+        syncNewCustomerPhone();
+    }
+}
+
+function handleNewCustomerSearch() {
+    const input = document.getElementById('newCustomerName');
+    const dropdown = document.getElementById('newCustomerDropdown');
+    const fileInput = document.getElementById('newCustomerFile');
+    const query = input.value.trim();
+
+    dropdown.innerHTML = '';
+
+    if (query === '') {
+        dropdown.style.display = 'none';
+        // Revert to generated ID
+        let maxIdNum = 0;
+        customersData.forEach(c => {
+            let num = parseInt(c.id.replace('C', ''));
+            if (!isNaN(num) && num > maxIdNum) maxIdNum = num;
+        });
+        fileInput.value = 'C' + (maxIdNum + 1).toString().padStart(3, '0');
+        return;
+    }
+
+    let matches = customersData.filter(c => c.name.includes(query));
+
+    if (matches.length === 0) {
+        dropdown.style.display = 'none';
+        let maxIdNum = 0;
+        customersData.forEach(c => {
+            let num = parseInt(c.id.replace('C', ''));
+            if (!isNaN(num) && num > maxIdNum) maxIdNum = num;
+        });
+        fileInput.value = 'C' + (maxIdNum + 1).toString().padStart(3, '0');
+        return;
+    }
+
+    matches.forEach(c => {
+        let div = document.createElement('div');
+        div.className = 'dropdown-item';
+        div.style.padding = '10px';
+        div.style.cursor = 'pointer';
+        div.style.borderBottom = '1px solid var(--border-dim)';
+        div.innerHTML = '<strong>' + c.name + '</strong> <span class="customer-search-file" style="float: left; color: var(--text-muted); font-size: 0.85rem;">' + c.id + '</span>';
+        div.onclick = () => {
+            input.value = c.name;
+            fileInput.value = c.id;
+            document.getElementById('newCustomerPhone').value = c.phone || '';
+            document.getElementById('newCustomerWhatsapp').value = c.phone || '';
+            dropdown.style.display = 'none';
+        };
+        dropdown.appendChild(div);
+    });
+
+    dropdown.style.display = 'block';
+}
+
+function syncNewCustomerPhone() {
+    const phoneInput = document.getElementById('newCustomerPhone');
+    const whatsappInput = document.getElementById('newCustomerWhatsapp');
+    const checkbox = document.getElementById('newCustomerSamePhone');
+    if (checkbox && whatsappInput && phoneInput) {
+        if (checkbox.checked) {
+            whatsappInput.value = phoneInput.value;
+            whatsappInput.readOnly = true;
+            whatsappInput.style.opacity = '0.7';
+        } else {
+            whatsappInput.readOnly = false;
+            whatsappInput.style.opacity = '1';
+        }
+    }
+}
+
+function saveNewCustomer() {
+    const name = document.getElementById('newCustomerName').value.trim();
+    if (!name) {
+        alert('الرجاء إدخال اسم العميل');
+        return;
+    }
+    alert('تم حفظ بيانات العميل بنجاح');
+    closeAddCustomerModal();
+}
+
+// Close dropdown if clicked outside
+document.addEventListener('click', function(e) {
+    const input = document.getElementById('newCustomerName');
+    const dropdown = document.getElementById('newCustomerDropdown');
+    if (input && dropdown && e.target !== input && e.target !== dropdown && !dropdown.contains(e.target)) {
+        dropdown.style.display = 'none';
+    }
+});
 
 // ========== التهيئة ==========
 document.addEventListener('DOMContentLoaded', function() {
@@ -486,3 +644,4 @@ document.addEventListener('keydown', function(e) {
         closeCustomerFlyout();
     }
 });
+
