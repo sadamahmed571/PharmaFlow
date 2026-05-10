@@ -358,8 +358,7 @@
     background: rgba(13, 26, 33, 0.85); /* شفافية 0.85 */
     backdrop-filter: blur(12px);
     border-left: 2px solid var(--border-dim);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    transition: right 0.3s ease;
+    transition: right 0.3s ease, box-shadow 0.3s ease;
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -367,6 +366,7 @@
 
 .quick-flyout.open {
     right: 0;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 }
 
 .flyout-header {

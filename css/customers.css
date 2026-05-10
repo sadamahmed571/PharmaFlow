@@ -1,5 +1,168 @@
 /* ========== صفحة العملاء - Customers Page ========== */
+/* --- إعدادات النافذة الأساسية --- */
+.add-customer-inline-panel {
+    display: none;
+    background: var(--bg-deep);
+    border: 1px solid var(--accent-blue);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease-out;
+}
 
+/* --- ترويسة النافذة --- */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-dim);
+    padding-bottom: 10px;
+}
+
+.modal-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    color: var(--danger-hover);
+    cursor: pointer;
+}
+
+/* --- تخطيط الصفوف والأعمدة --- */
+.customer-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.contact-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.customer-name-col {
+    flex: 2;
+    position: relative;
+}
+
+.customer-file-col,
+.phone-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+/* --- حقول الإدخال والأيقونات --- */
+.input-with-icon {
+    position: relative;
+}
+
+.input-icon, 
+.input-icon-phone {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    color: var(--text-muted);
+    width: 16px;
+    height: 16px;
+}
+
+.customer-input {
+    width: 100%;
+    border-radius: 6px;
+    border: 1px solid var(--border-dim);
+    background: var(--input-bg-dark);
+    color: var(--text-light);
+}
+
+/* تخصيص حقل الاسم */
+#newCustomerName {
+    padding: 10px 35px 10px 10px;
+}
+
+/* تخصيص حقل رقم الملف */
+.customer-file-input {
+    padding: 10px 35px 10px 10px;
+    background: var(--input-bg-darker);
+    color: var(--text-muted);
+}
+
+/* تخصيص حقول الهاتف */
+.phone-input {
+    padding: 10px 35px 10px 45px;
+    text-align: left;
+    direction: ltr;
+}
+
+.phone-prefix {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* --- القائمة المنسدلة --- */
+.dropdown-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    z-index: 100;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* --- خيارات التحديد (الـ Checkbox) --- */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- ذيل النافذة (الأزرار) --- */
+.modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-cancel {
+    padding: 8px 15px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border-dim);
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+.btn-save {
+    padding: 8px 15px;
+    border-radius: 6px;
+    background: var(--accent-blue);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+}
 /* تنسيق الصفحة الرئيسية - نفس إعدادات index */
 #customers.view {
     padding: 15px;
@@ -28,12 +191,13 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+	margin-top: 30px;
 }
 
 .metric-widget {
     background: var(--bg-card);
-    border: 1px solid var(--border-dim);
+    border: none;
     border-radius: 12px;
     padding: 20px;
     display: flex;
@@ -67,8 +231,8 @@
     color: var(--danger-cell);
 }
 
-.activity-widget .metric-icon {
-    background: var(--active-dim);
+.customers-widget .metric-icon {
+    background: rgba(36, 207, 200, 0.15);
     color: var(--active);
 }
 
@@ -206,7 +370,7 @@
     transition: all 0.2s ease;
 }
 
-.filter-pill i {
+.filter-pill-icon {
     width: 14px;
     height: 14px;
 }
@@ -482,8 +646,7 @@
     background: rgba(13, 26, 33, 0.85); /* شفافية 0.85 مثل المخزون */
     backdrop-filter: blur(12px);
     border-left: 2px solid var(--border-dim);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    transition: right 0.3s ease;
+    transition: right 0.3s ease, box-shadow 0.3s ease;
     z-index: 100;
     display: flex;
     flex-direction: column;
@@ -491,6 +654,7 @@
 
 .quick-flyout.open {
     right: 0;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 }
 
 .flyout-header {
@@ -709,24 +873,26 @@
 /* ويدجت الإجراءات */
 .actions-widget-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 15px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 10px;
 }
 
 .action-widget-btn {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 12px;
+    gap: 5px;
+    padding: 8px 5px;
     background: var(--button);
     border: 1px solid var(--border-dim);
     border-radius: 8px;
     color: var(--text-light);
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-align: center;
 }
 
 .action-widget-btn:hover {
@@ -736,8 +902,8 @@
 }
 
 .action-widget-btn i {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 }
 
 /* Debt Summary Grid */
@@ -993,7 +1159,8 @@
         display: flex;
         flex-direction: row;
         gap: 8px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+	      margin-top: 20px;
         overflow-x: auto;
         scrollbar-width: none;
     }
@@ -1032,7 +1199,7 @@
     }
 
     .control-hub {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
     }
 
     /* البحث وزر الإضافة في نفس الصف */
@@ -1057,6 +1224,9 @@
         height: 16px;
         right: 12px;
     }
+	.search-box input::placeholder {
+    font-size: 0.74rem;
+}
 
     .action-btn-primary {
         padding: 10px 12px;
@@ -1088,20 +1258,20 @@
     }
 
     .filter-pill {
-        font-size: 0.7rem;
-        padding: 5px 10px;
+        font-size: 0.74rem;
+        padding: 7px 10px;
         white-space: nowrap;
     }
 
-    .filter-pill i {
-        width: 12px;
-        height: 12px;
+    .filter-pill-icon {
+        width: 8px;
+        height: 8px;
     }
 
     .date-filter select {
         width: 100%;
-        padding: 8px 12px;
-        font-size: 0.8rem;
+        padding: 7px 10px;
+        font-size: 0.74rem;
     }
 
     /* تنسيقات جدول العملاء - مقتبسة من جدول المخزون */
@@ -1194,8 +1364,59 @@
         right: -100%;
     }
 
+    .flyout-section {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+    }
+
+    .section-title {
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .section-title-icon {
+        width: 14px;
+        height: 14px;
+    }
+
     .summary-grid {
         grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .summary-item {
+        grid-column: span 1;
+        padding: 10px;
+    }
+
+    .summary-item.full-width {
+        grid-column: span 1;
+    }
+
+    .summary-label {
+        font-size: 0.7rem;
+        color: var(--active);
+        gap: 4px;
+    }
+
+    .summary-label i {
+        width: 12px;
+        height: 12px;
+    }
+
+    .summary-value {
+        font-size: 0.85rem;
+        padding-right: 16px;
+    }
+
+    .value-highlight {
+        font-size: 1rem;
+    }
+
+    .qty-status {
+        font-size: 0.7rem;
+        padding: 2px 6px;
     }
 
     .batch-widget-grid {
@@ -1203,7 +1424,7 @@
     }
 
     .actions-widget-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
     }
 
     .flyout-header {
@@ -1223,4 +1444,390 @@
     .action-btn-primary {
         padding: 10px;
     }
+}
+
+
+/* ========== توحيد هوية نموذج إضافة عميل (مستنسخ من المبيعات) ========== */
+.customer-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.customer-name-col {
+    width: 70%;
+}
+
+.customer-file-col {
+    width: 30%;
+}
+
+.input-with-icon {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--active);
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.input-icon-phone {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--active);
+    pointer-events: none;
+    opacity: 0.6;
+    width: 14px;
+    height: 14px;
+}
+
+.customer-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    /* زيادة البادنج لليمين لمكان الايقونة */
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    background: var(--bg-card);
+    color: var(--text-light);
+    box-sizing: border-box;
+    outline: none;
+}
+
+.price-icon {
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+    color: var(--active);
+    vertical-align: text-bottom;
+}
+
+.customer-file-input {
+    background: var(--input-bg-dark) !important;
+    color: var(--accent-blue) !important;
+    text-align: center;
+    font-weight: bold;
+    cursor: default;
+}
+
+.customer-contact-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.contact-row {
+    display: flex;
+    gap: 10px;
+}
+
+.phone-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.phone-prefix {
+    position: absolute;
+    left: 10px;
+    color: var(--placeholder);
+    font-size: 0.76rem;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.phone-input {
+    padding: 10px 30px 10px 15px;
+    text-align: right;
+
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
+    margin-right: 140px;
+}
+
+.checkbox-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.contact-row input::placeholder,
+.customer-row input::placeholder {
+    color: var(--placeholder) !important;
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 767px) {
+   .contact-row input::placeholder,
+.customer-row input::placeholder   {
+        font-size: 0.67rem !important;
+    }
+}
+#sameAsPhone {
+
+    width: 10px;
+    height: 10px;
+    opacity: 0.85;
+    border: 1px solid var(--active);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#sameAsPhone:checked {
+    background-color: var(--active);
+}
+
+#sameAsPhone:checked::after {
+    content: '';
+    width: 3px;
+    height: 6px;
+    border: solid var(--checkbox-mark);
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+/* ========== تنسيقات إضافية خاصة بحاوية إضافة عميل ========== */
+.add-customer-inline-panel {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: slideInPanel 0.4s ease;
+}
+
+@keyframes slideInPanel {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.close-panel {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.btn-cancel, .btn-save {
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-cancel {
+    background: transparent;
+    border: 1px solid var(--border-dim);
+    color: var(--text-light);
+}
+
+.btn-save {
+    border: none;
+    color: white;
+}
+
+/* تنسيق الجوال (Responsive) لتطابق المبيعات */
+@media (max-width: 768px) {
+    .customer-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .customer-name-col, .customer-file-col {
+        width: 100%;
+    }
+    .contact-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .phone-wrapper {
+        width: 100%;
+    }
+    .checkbox-group {
+        justify-content: flex-start !important;
+        margin-top: 10px;
+    }
+}
+
+/* Add Customer Inline Panel Styles */
+.add-customer-inline-panel {
+    background: var(--bg-deep);
+    border: 1px solid var(--accent-blue);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s ease-out;
+}
+
+.add-customer-inline-panel .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-dim);
+    padding-bottom: 10px;
+}
+
+.add-customer-inline-panel .modal-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.add-customer-inline-panel .close-modal {
+    background: transparent;
+    border: none;
+    color: var(--danger-hover);
+    cursor: pointer;
+}
+
+.add-customer-inline-panel .customer-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.add-customer-inline-panel .customer-name-col {
+    flex: 2;
+    position: relative;
+}
+
+.add-customer-inline-panel .input-with-icon {
+    position: relative;
+}
+
+.add-customer-inline-panel .input-icon {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    color: var(--text-muted);
+    width: 16px;
+    height: 16px;
+}
+
+.add-customer-inline-panel .customer-input {
+    width: 100%;
+    padding: 10px 35px 10px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-dim);
+    background: var(--input-bg-dark);
+    color: var(--text-light);
+}
+
+.add-customer-inline-panel .customer-file-input {
+    background: var(--input-bg-darker);
+    color: var(--text-muted);
+}
+
+.add-customer-inline-panel .dropdown-list {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 100%;
+    background: var(--bg-deep);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    z-index: 100;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.add-customer-inline-panel .customer-file-col {
+    flex: 1;
+}
+
+.add-customer-inline-panel .contact-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.add-customer-inline-panel .phone-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.add-customer-inline-panel .input-icon-phone {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    color: var(--text-muted);
+    width: 16px;
+    height: 16px;
+}
+
+.add-customer-inline-panel .phone-input {
+    padding: 10px 35px 10px 45px;
+    text-align: left;
+    direction: ltr;
+}
+
+.add-customer-inline-panel .phone-prefix {
+    position: absolute;
+    left: 10px;
+    top: 12px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.add-customer-inline-panel .checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.add-customer-inline-panel .checkbox-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.add-customer-inline-panel .modal-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.add-customer-inline-panel .btn-cancel {
+    padding: 8px 15px;
+    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border-dim);
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+.add-customer-inline-panel .btn-save {
+    padding: 8px 15px;
+    border-radius: 6px;
+    background: var(--accent-blue);
+    border: none;
+    color: #fff;
+    cursor: pointer;
 }
