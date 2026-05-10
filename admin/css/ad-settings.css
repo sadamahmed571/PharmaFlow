@@ -1,0 +1,400 @@
+/* ========== إعدادات مفتاح Gemini ========== */
+.api-key-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.api-key-container input {
+    flex: 1;
+}
+
+.btn-api-test {
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 15px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.btn-api-test:hover {
+    background: var(--active);
+    transform: translateY(-1px);
+}
+
+.btn-api-test i {
+    width: 16px;
+    height: 16px;
+}
+
+.quota-section {
+    background: var(--bg);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-dim);
+}
+
+.quota-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-bottom: 8px;
+}
+
+.quota-bar-bg {
+    height: 8px;
+    background: var(--button);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.quota-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-blue), #4caf50);
+    transition: width 1s ease-in-out;
+}
+
+.quota-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.spin {
+    animation: api-spin 2s linear infinite;
+}
+
+@keyframes api-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media screen and (max-width: 600px) {
+    .api-key-container {
+        flex-direction: column;
+    }
+    .btn-api-test {
+        padding: 12px;
+        justify-content: center;
+    }
+}
+
+/* ========== إعدادات البطاقات ========== */
+.settings-card {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-dim);
+    margin-bottom: 20px;
+}
+
+.settings-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.settings-card-title {
+    color: var(--accent-yellow);
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.settings-card-header .settings-card-title {
+    margin-bottom: 0;
+}
+
+.settings-card-desc {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-bottom: 15px;
+}
+
+/* ========== التخطيط ========== */
+.settings-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+.settings-grid-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.settings-full-width {
+    grid-column: 1 / -1;
+}
+
+/* ========== الأقسام الفرعية ========== */
+.settings-sub-section {
+    background: var(--bg);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+.settings-sub-section.compact {
+    padding: 10px;
+}
+.settings-sub-title {
+    color: var(--text-light);
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ========== خيارات وعناصر التحكم ========== */
+.settings-check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.settings-check-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.settings-check-label.light {
+    color: var(--text-light);
+}
+
+.settings-inline-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+.settings-inline-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.settings-inline-item span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+.settings-inline-input {
+    background: var(--bg-card);
+    border: 1px solid var(--border-dim);
+    color: var(--text-light);
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* ========== رفع الملفات ========== */
+.upload-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+.btn-upload {
+    flex: 1;
+    padding: 10px;
+    background: var(--button);
+    border: 1px dashed var(--border-dim);
+    color: var(--text-muted);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    cursor: pointer;
+}
+.upload-preview {
+    width: 60px;
+    height: 60px;
+    background: var(--bg);
+    border: 1px solid var(--border-dim);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.upload-preview span {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* ========== قائمة الموظفين ========== */
+.staff-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.staff-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--button);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border-dim);
+}
+.staff-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.staff-name {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: bold;
+}
+.staff-role {
+    font-size: 0.7rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-right: 5px;
+}
+.staff-role.admin {
+    background: var(--accent-blue);
+    color: white;
+}
+.staff-role.user {
+    background: var(--bg-card);
+    color: var(--text-muted);
+    border: 1px solid var(--border-dim);
+}
+.staff-contact {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.staff-actions {
+    display: flex;
+    gap: 8px;
+}
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-icon.yellow { color: var(--accent-yellow); }
+.btn-icon.blue { color: var(--accent-blue); }
+.btn-icon.red { color: #f44336; }
+.btn-icon i { width: 18px; height: 18px; }
+
+/* ========== أزرار التصدير ========== */
+.export-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.btn-export {
+    padding: 8px 12px;
+    background: var(--button);
+    border: 1px solid var(--border-dim);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.btn-export.green { color: #4caf50; }
+.btn-export.blue { color: var(--accent-blue); }
+.btn-export.yellow { color: var(--accent-yellow); }
+.btn-export.red { color: #f44336; }
+
+/* ========== المودال (النافذة المنبثقة) ========== */
+.settings-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.settings-modal-content {
+    background: var(--bg-card);
+    width: 450px;
+    max-width: 90%;
+    border-radius: 12px;
+    border: 1px solid var(--border-dim);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+.settings-modal-header {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.settings-modal-title {
+    color: var(--accent-yellow);
+    font-size: 1.1rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+.settings-modal-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.settings-modal-row {
+    display: flex;
+    gap: 10px;
+}
+.settings-modal-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+.settings-modal-footer {
+    padding: 15px;
+    border-top: 1px solid var(--border-dim);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.btn-cancel {
+    padding: 8px 15px;
+    background: var(--button);
+    border: 1px solid var(--border-dim);
+    color: var(--text-muted);
+    border-radius: 6px;
+    cursor: pointer;
+}
+.btn-save {
+    padding: 8px 15px;
+    background: var(--accent-blue);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
